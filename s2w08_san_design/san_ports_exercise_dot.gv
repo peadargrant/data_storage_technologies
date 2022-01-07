@@ -1,0 +1,23 @@
+digraph G {
+
+	H1;
+	H2;
+	H3;
+	H4;
+
+	SW1;
+	SW2;
+
+	SA1;
+	SA2;
+
+	H1->SW1;
+	H2->SW1;
+	H3->SW2;
+	H4->SW2;
+
+	SW1->SW2;
+
+	SW1->SA1;
+	SW2->SA2;
+}

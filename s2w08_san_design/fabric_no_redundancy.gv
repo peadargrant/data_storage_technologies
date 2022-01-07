@@ -1,0 +1,26 @@
+digraph G {
+
+	subgraph cluster_host_layer {
+	label="Host layer";
+	H1 [label="Host 1"];
+	H2 [label="Host 2"];
+	H3 [label="Host 3"];
+	H4 [label="Host 4"];
+	H5 [label="Host 5"];
+}
+	subgraph cluster_fabric_layer {
+	label="Fabric layer";
+	SW1;
+	}
+	subgraph cluster_storage_layer {
+	label="Storage layer";
+	SA1 [shape=cylinder];
+	}
+	H1->SW1;
+	H2->SW1;
+	H3->SW1;
+	H4->SW1;
+	H5->SW1;
+	SW1->SA1;
+
+}
