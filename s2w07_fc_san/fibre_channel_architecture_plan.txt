@@ -1,0 +1,127 @@
+==========================
+FIBRE CHANNEL ARCHITECTURE
+==========================
+
+FIBRE CHANNEL PROTOCOL (FCP):
+----------------------------
+| Things we want:
+| | channel speed for data transfer
+| | low protocol overhead
+| | scalability
+| Serial SCSI over FC network
+| Same idea as iSCSI - devices "look" local
+
+SCALABILITY:
+-----------
+| More than 15x10^6 devices on netowrk
+SUpport speeds up to 16Gbps
+
+PROTOCOL STACK:
+--------------
+Upper-layer protocol (to be carried): Serial SCSI (can carry IP too!)
+[ESCON: protocol used for Mainframes]
+FC-4 Upper layer protocol map
+| Defines interfaces to upper layers
+| Defines mapping to lower layers
+FC-2 Framing/flow control
+| Addressing, structure, frame organisation
+| Fabric services, class of service, flow control, routing
+FC-1 Encode-decode
+| How data is encoded for transmission, decoded on receipt
+| 8-bit character => 10-bit transmission character
+| 10GBps & above use 64-bit=>66-bit encoding
+| Transmission words, frame delimiters
+| Link initialisation
+| Error recovery
+FC-0 Physical
+| Physical interface, cable connectors etc.
+
+ADDRESSING:
+----------
+Similar to IP addresses...
+FC addresses are 24-bit, divided into 3-bytes:
+[23..22..21.. ... ..2..1..0]
+| Byte 1: domain ID (unique number provided to switch) only 259
+| Byte 2: area ID (group of switch ports, often a card)
+| Byte 3: Port ID (port within group)
+Special addresses:
+| FFFFFC: name server
+| FFFFFE: fabric login service
+Max node ports:
+| 239 domains * 256 areas * 256 ports
+
+NPIV:
+----
+Multiple N_port IDs on a single physical N_Port
+Virtualisation
+FC switch must be NPIV enabled
+
+WORLD WIDE NAMES WWNs
+---------------------
+Similar to MAC addresses...
+WWNS either
+1) burned into hardware
+2) set via software
+FC name server maps dynamically created FC addresses to WWNs
+
+FIBRE CHANNEL FRAME
+-------------------
+5 parts:
+Start-of-frame (SOF) [4 bytes]
+| delimiter
+| is first in sequence of frames? 
+Frame header [24 bytes]
+| S_ID Source ID <-------+- FC addresses 
+| D_ID Destination ID <--+
+| SEQ_ID Sequence ID
+| SEQ_CNT Sequence count <--------+- manage part of sequence
+| OX_ID Originating exchange ID <-+
+| RX_ID REsponder exchange ID
+| R_CTL routing control: is frame a control or data frame?
+| CS_CTL class-specific control (later on!)
+| TYPE: ULP (upper-layer protocol for data frame), event signal for control frame
+| DF_CTL: 1-byte showing if optional headers in data payload
+| F_CTL: control information relating to frame content
+Data Field: Data Payload
+Cyclic redundancy check: has it been received correctly?
+End of frame
+
+DATA STRUCTURE + ORGANISATION
+-----------------------------
+Frame <-> word
+Sequence <-> sentence
+Exchange <-> conversation
+
+Exchange:
+| two node ports idenitfy & manage a set of information units
+| Upper layer protocol needs to be sent another port
+| exchange is one more more sequences:
+Sequence:
+| each uppper layer protocol has certain operations
+| operations map to information unit
+| information unit maps to a sequence
+| contiguous set of frames sent from one port to another
+Frame:
+| Fundamental unit, up to 2112 bytes payload
+
+FLOW CONTROL
+------------
+BB_Credit:
+| Controls max #frames that can be onlink at a given time
+| In SF: BB_Credit management between two ports
+| Transmit port keeps #free receiver buffers, keep sending if >0
+| R_RDY primitive used to signal receiver ready
+EE_Credit:
+| Similar idea but between initiator and target.
+
+CLASS OF SERVICE
+----------------
+Class 1, 2, 3
+| 1 dedicated, 2+3 nondedicated
+| flow control 1:EE, 2:EE+BB, 3:BB
+| 1 guarantees order, others don't
+| 3 doesn't acknowledge frames, others do
+| 1 doesn't multiplex, others do
+| Bandwidth utilisation
+Also have class F for fabric management (like class 2)
+

@@ -1,0 +1,68 @@
+===============================
+FIBRE CHANNEL SAN MESH TOPOLOGY
+===============================
+
+GENERAL TOPOLOGICAL DIFFERENCES TO IP NETWORKS
+| SANS Tend to be relatively confined spatially
+| SANS Tend to be higher cost
+| Often perceived "higher stakes" with SANs
+| Organisational split: storage staff vs networking staff "turf war"
+Like in IP networks, have general topologies.
+
+** STANDARD TOPOLOGIES ** (draw as tree)
+
+TOPOLOGIES SO FAR
+Point-to-point
+FC-AL via loop 
+FC-AL via hub: logically ring, physically star
+>> REMAINING TOPOLOGIES WILL HAVE SAME LOGICAL/PHYSICAL TOPOLOGY <<
+
+SINGLE SWITCH TOPOLOGY
+| Single switch
+| Becoming more popular
+| #Ports vs $ increasing
+| Larger modular switches with cards
+
+--- MESH TOPOLOGIES ---
+
+MESH TOPOLOGY: FULL MESH
+| Multiple switches
+| All switches directly connected to each other
+| Usually about 3-4 switches : any more too much E ports.
+| Maximum of 1 ISL to be traversed.
+| Hop count: how many ISLs are to be traversed?
+
+PARTIAL MESH TOPOLOGY: FULL MESH w/o SOME LINKS
+| More scalable.
+| Need to think / work out the topology to make sense.
+| Traffic may need >1 ISL from source to destination.
+| ISL overloading
+
+
+--- CORE-EDGE TOPOLOGIES ---
+
+Two "tiers" of switches: edge and core tiers.
+Hosts attached to edge tier switches.
+Edge switches:
+| have ISLs to central "core" switch. 
+| are NOT connected to each other (helps port utilisation)
+| Storage devices only connected to core tier.
+| High-performance hosts may be directly connected to core tier.
+| Keeps hop count to 1.
+| Single-core-topology
+| Dual-core topology: add second core switch, links to each edge switch.
+
+COMPLEX CORE-EDGE topology
+| Same as above, but mesh only between cores.
+| Edge switches not connected to all cores.
+
+
+-- FAN IN/OUT --
+
+Fan Out : multiple server ports communicate with single storage port.
+(front-end ~ throughput) 
+Fan in: single HBA communicates with multiple storage units. (HBA limits)
+
+
+DIRECTOR-CLASS SWITCHES : ambiguous.
+

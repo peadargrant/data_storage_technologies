@@ -1,0 +1,70 @@
+FIBRE CHANNEL SAN
+-----------------
+
+Review of class test : very impressive results.
+If concerned about any questions please come and see me after.
+
+Chapter 5 in book
+
+Most ideas same in principle as iSCSI over TCP/IP over ethernet...
+-    just that the component differ
+-    exact protocols used differ also
+-    multiple hosts (or servers)
+-    largely the same drivers as with iSCSI
+     (recap: consolidate, ease of backup, management etc)
+
+Nomenclature / Components:
+-------------------------
+Hosts and Storage appliances both called NODES.
+Node Ports
+| HBA cards on servers
+| Storage front-end controllers
+| Port operates full-duplex
+
+Cables:
+------
+| By name: optical fibre
+| | MMF (OM1, OM2, OM3=laser optimised)
+| | | modal dispersion at longer distancees
+| | | SPDIF-like cable.
+| | SMF: more expensive, faster, longer distances
+| | Standardised connectors: SC, LC, ST
+| Copper used for short distances (<=30m)
+
+Interconnect:
+------------
+Hubs - same idea as ethernet, but more like a loop internally
+Switches - directly route from one node to another
+Director - high-end switch
+
+FC CONNECTIVITY
+---------------
+
+POINT-TO-POINT:
+Simplest: point-to-point
+Crossover cable/fibre!
+
+FIBRE-CHANNEL ARBITRATED LOOP:
+| Logical: token-ring (need to explain!)
+| Devices must ARBITRATE to gain controll of the loop.
+| 1 device at a time in charge.
+| Can implement as shown without any interconnects.
+| Physical: loop OK but usually star using a HUB
+| 8-bit addressing: 127 addresses, 1 reserved (uplink), so 126.
+| add/drop device: loop reinitialisation
+
+FIBRE-CHANNEL SWITCHED FABRIC:
+Fabric: logical space where all nodes communicate with one another
+More or less same as Ethernet switching.
+Each switch has "domain identifier", part of FC addressing scheme.
+Switches connected via ISL ( inter-switch links )
+Fabric described by number of tiers (#switches traffic must traverse)
+Implications for fabric-management traffic.
+
+PORT TYPES:
+N_Port: end point on HBA or storage array
+E_Port: forms connection between two FC switches. (expansion port) for ISLs
+F_Port: switch port for connection to N_Port
+G_Port: can act as E_Port or F_Port, auto setup.
+
+

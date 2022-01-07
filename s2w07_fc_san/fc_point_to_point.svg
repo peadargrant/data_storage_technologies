@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg3735"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   width="449.47278"
+   height="158.52385"
+   sodipodi:docname="fc_point_to_point.svg">
+  <metadata
+     id="metadata3741">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3739" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2560"
+     inkscape:window-height="1395"
+     id="namedview3737"
+     showgrid="false"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="182.55056"
+     inkscape:cy="88.736817"
+     inkscape:window-x="0"
+     inkscape:window-y="1"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3735" />
+  <g
+     id="g4304"
+     transform="translate(-3.7100504,-58.544515)">
+    <g
+       transform="translate(0,-5.7220459e-6)"
+       id="g4278">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3747"
+         width="102.58741"
+         height="62.466534"
+         x="5.4171572"
+         y="105.80682"
+         ry="3.3892276"
+         rx="3.7242954" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:40px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none"
+         x="9.6893778"
+         y="148.91101"
+         id="text4261"><tspan
+           sodipodi:role="line"
+           id="tspan4263"
+           x="9.6893778"
+           y="148.91101">Host</tspan></text>
+    </g>
+    <g
+       id="g4273">
+      <rect
+         rx="6.3367729"
+         ry="5.1994824"
+         y="89.124504"
+         x="278.34064"
+         height="95.831161"
+         width="174.54929"
+         id="rect4259"
+         style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:40px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none"
+         x="287.08014"
+         y="147.72368"
+         id="text4265"><tspan
+           sodipodi:role="line"
+           id="tspan4267"
+           x="287.08014"
+           y="147.72368">Storage</tspan></text>
+    </g>
+    <g
+       id="g4291">
+      <path
+         style="fill:none;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 114.67585,137.41949 155.85381,0"
+         id="path4283"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 261.0625,133.0625 271.625,137.5 261,142 l 0.0625,-8.9375 z"
+         id="path4287"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path4289"
+         d="M 123.5625,133.0625 113,137.5 l 10.625,4.5 -0.0625,-8.9375 z"
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+    </g>
+    <text
+       id="text4296"
+       y="124.5"
+       x="117"
+       style="font-style:normal;font-weight:normal;font-size:40px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none"
+       xml:space="preserve"><tspan
+         style="font-size:20px"
+         y="124.5"
+         x="117"
+         id="tspan4298"
+         sodipodi:role="line">N</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none"
+       x="257"
+       y="124.5"
+       id="text4300"><tspan
+         sodipodi:role="line"
+         id="tspan4302"
+         x="257"
+         y="124.5"
+         style="font-size:20px">N</tspan></text>
+  </g>
+</svg>
