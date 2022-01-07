@@ -1,0 +1,73 @@
+iSCSI LECTURE
+=============
+
+Going to formalise some of the ideas around iSCSI.
+
+       Host (initiator)  ---  IP network --- Storage (target)
+
+HOST ACCESS METHODS: 
+Standard NIC w/ iSCSI initiator
+| easiest option, plenty of online guides
+| iSCSI + TCP/IP might become appreciable load on CPU
+iSCSI HBA (so target LUN looks like any other drive)
+| expensive, but works!
+| many of same disadvantages of RAID cards - invisible to OS.
+TCP offload Engine-equipped NIC
+| halfway house
+| needs driver support, unforthcoming in Linux.
+Q: which of these three *guarantee* diskless boot if needed?
+
+
+FUNDAMENTAL PROTOCOL:
+
+7-layer model: iSCSI is layer 5 fundamentally:
+| login, authentication, target discovery, session management
+| assuming you know where other layer boundaries are roughly
+
+Port # 860, 3260
+
+Protocol Data Unit (or PDU) is basic unit of communication.
+| encapsulated into IP packet for transport.
+| IP header: routing info
+| TCP header: guaranteed delivery
+| TCP/IP "payload" is iSCSI PDU
+| Header: how to extract data + commands for target
+| Digest: additional CRC (optional) [as well as Ethernet CRC, TCP checksum]
+PDU *does not* have a 1:1 relationship with IP packet!!!
+| IP only "delivers" packets, TCP must sequence them
+Can force alignment by changing MTU
+
+
+DISCOVERY:
+
+So far, have the idea of a LUN on a particular *target*:
+Two key discovery protocols:
+
+SendTargets: list of valid targets from an IP address 
+
+iSNS
+| targets register with iSNS server on network
+| initiators can request list of registered targets
+
+SLP: less-often used.
+
+Honestly speaking, can avoid using much of these!
+
+
+iSCSI names: name used to identify targets & initiators in iSCSI
+
+iSCSI Qualified Name (IQN)
+| based on reversed DNS naming:
+| iqn.2018-03.com.peadargrant:optional_string
+| by convention, based around DNS (not enforced)
+| allows for meaningful names
+
+Extended Unique Identifier (global unique identifier)
+
+
+iSCSI data exchange
+
+Command--\
+Status--- - sequence numbers
+Data ----/
+

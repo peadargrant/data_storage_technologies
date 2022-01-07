@@ -1,0 +1,39 @@
+CACHING
+=======
+
+(RAID quiz online)
+
+(Topic slightly out of sequence!)
+
+Disks don't always do what you tell them when you tell them.
+
+
+NATIVE COMMAND QUEUEING
+-----------------------
+
+(Forgot to this earlier on, but relevant now)
+
+Disk may re-order received commands to improve performance.
+
+Algorithms:
+| Seek-time optimisation
+| Access Time Optimisation ( seek time + rotational latency ) 
+
+
+CACHING Key idea:
+----------------
+Going to interpose something between the host and disks to speed
+things up.  Already seen in cloud architecture: 
+| Application-level caches to store results from DB, external APIs.
+| Edge caches to store complete web pages from EC2-hosted servers.
+
+Must consider the
+INTELLIGENT STORAGE SYSTEM
+| May be a "box" or the components may be spread around (hw/sw)
+
+Components:
+1) Front-end
+2) Cache
+3) Back-end
+4) Physical disks
+

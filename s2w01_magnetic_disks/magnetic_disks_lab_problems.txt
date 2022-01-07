@@ -1,0 +1,22 @@
+Magnetic disks problem set
+Dr Peadar Grant
+
+Attempt the following problems.
+Ensure you can answer them manually (pen, paper, exam-compliant calculator)
+Also try to use PowerShell (or another scripting language) to help.
+
+1.  Calculate how many kB are in 4.3 GB.
+2.  Express 4096 MB in GB.
+3.  A disk is advertised with 500 GB capacity. Calculate its actual capacity.
+4.  A disk has an actual capacity of 512 GB. Calculate the capacity that a manufacturer would advertise it as in GB.
+5.  Calculate the disk capacity a manufacturer would advertise a disk as that has a usable capacity of 4 TB.
+6.  A hard disk drive has 8 heads per cylinder and 16 sectors per track. Compute the logical block address for the CHS address (4, 4, 2) for this drive.
+7.  A hard disk drive has 16 heads per cylinder and 32 sectors per track. Convert the LBA 3910 to its equivalent CHS address for this drive.
+8.  A disk has a full-stroke seek time of 39 ms. Calculate its average seek time.
+9.  A disk has average seek time 11 ms. Calculate its full-stroke seek time.
+10. Determine the average rotational latency for a 7200 RPM drive.
+11. A disk has seek time of 10 ms, average rotational latency of 5 ms and transfer time of 2 ms. Calculate the average disk service time.
+12. Calculate the number of IOPS a drive can perform if it has a disk service time of 15 ms.
+13. A disk can perform 83 IOPS. Determine its disk service time.
+14. A 7200 RPM drive has a full-stroke seek time of 18 ms, transfers data internally at a rate of 40 MB/s in blocks of 32 kB. Determine the IOPS.
+

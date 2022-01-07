@@ -1,0 +1,15 @@
+This week we'll look at iSCSI from the point of the initiator (or client). 
+
+Start off by looking up and reading the iSCSI article on Wikipedia.  Make notes of about 3-5 key points on:
+
+What level (block vs file) that iSCSI operates at? 
+Whether the initiator or target is responsible for the filesystem.
+How you would compare iSCSI to your knowledge of SMB (Windows/Samba) file sharing. 
+The read the iSCSI notes.  I've posted a link also to a longer iSCSI guide in PDF that explains some of the concepts in some more detail.
+
+Practical exercise:
+
+For some practical context: Video will be posted showing how a linux machine connects to and uses an iSCSI target.  Having watched this video, please research how you would do this from Windows machine.  You ideally should consider both the graphical interface and equivalent powershell commands.
+
+Write a short report (i.e. 1 paragraph, ideally introducing bullet points) that summarises the points you made when reading the Wikipedia article process of connecting to an iSCSI target on Windows. Post your report in the discussion forum for this topic and respond to at least one other report.  Posting of report and response will give full marks for this week's lab work.
+

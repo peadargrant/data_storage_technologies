@@ -1,0 +1,39 @@
+Syllabus run-through (10'):
+
+Learning objectives
+Course text:
+| obtaining
+| not covering everything
+| will not be sequentially following it
+| don't agree with all assertions/presentations of info in it
+| will be supplementing with handouts, whiteboard
+| nevertheless a useful tool
+Assessment
+Attendance
+- important, a lot of material to "study"
+- much easier to build familiarity through repetition and usage.
+Queries - forum.
+Questions?
+
+REVIEW EXERCISE (10'):
+Write down in bullet points things you are able to do relating to storage.
+
+Data & Storage talk (20'):
+| Data: client-side, server-side.
+| Operational vs backup/archive data
+| Data is often business critical - can't tolerate loss or unavailability
+| Amount of data increasing over time: mobile devices, connectivity, "cat videos"
+| Data types: file-based, vs. databases (structured/unstructured).
+| Resides on spinning magnetic disks, SSD, tape (backup/archive)
+| Directly attached IDE, SATA, SCSI, SAS. 
+| Rise of the data centre, 1/2/3U rack server, blade servers.
+| Storage depends on hardware: need redundancy! RAID, ZFS, JBOD, other stuff.
+| Virtualisation
+| Cloud (and self-provisioning)
+| Move away from server-centric storage.
+| NAS - remote filesystem: heterogenous networks, common management.
+| SAN - remote block device: no need for any commonality beyond protocol.
+| Advantages but needs management: dedup, replication, centralised backup, encryption at rest.
+| Legislation: FOI (government), GDPR (everyone).
+
+

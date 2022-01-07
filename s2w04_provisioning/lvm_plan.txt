@@ -1,0 +1,51 @@
+LOGICAL VOLUME MANAGERS
+=======================
+
+Already have mentioned the idea of partitioning and thin/thick provisioning.
+Want to clearly separate two different roles: layout OF volumes, and layout WITHIN volumes.
+
+SOFT SAN: thin provisioning on normal PC hardware
+
+iSCSI target server: makes LUNs out of block devices
+What about these block devices?
+Most basic - can be a hard disk or partition.
+RAID + Thin provisioning: volume manager.
+
+
+VOLUME MANAGER:
+
+Physical Volume (PV) (i.e. a physical hard disk, LUN)
+Spans Physical Extents (PE)
+Volume Groups (VG) combine physical volumes into storage pools.
+Logical Volume (LV) seen as block device by host OS
+
+Windows has logical disk management service.
+Linux has LVM + others.
+
+
+DISK IMAGE FILES:
+
+Simply a very thin "logical volume" that's actually stored as a file.
+Great for basic experimentation with iSCSI.
+
+
+iSCSI TARGET SERVER:
+Can export either physical hard disks OR logical volumes as block devices.
+
+
+FILESYSTEM:
+
+Filesystem is an OS-construct to lay out files on to the physical blocks.
+FAT ---------
+NTFS--------|
+ext3/4------+--  filesystems for block-level devices
+HFS+/APFS---|
+		(also have "fake" filesystems to map to NFS/SMB)
+
+
+
+Also have combined VOLUME MANAGERS + FILESYSTEMS:
+- ZFS: Sun, now Oracle, in FreeBSD and Linux.
+- BTRFS: Linux
+Later on!
+VERY useful for building a cheap server without having to worry too much about LVM+filesystem.

@@ -1,0 +1,28 @@
+=============
+ISCSI TARGETS
+=============
+
+So far have concentrated on iSCSI initiators / networking side.
+Need to consider iSCSI targets too.
+
+Larger data centre applications would have dedicated iSCSI array
+       - usual vendors.
+
+Smaller setups:
+	- "lab" environment for learning, maybe virtual
+	- DIY setups (e.g. Raspberry Pi's)
+	- testing / proof-of-concept environments
+	- low-usage environments
+All of these can be done with software.
+
+Usual approach:
+- Standard server OS (Linux / UNIX easiest)
+- Decide on a device or disk image file to make available (LUN)
+- Group together in a target
+- Install a target server [already in Linux kernel]
+- Then connect from initiator (or hardware HBA)
+
+Linux : TGT already in kernel
+
+Demo setup of iSCSI on Linux server
+Then connect & format on Windows server
