@@ -1,0 +1,24 @@
+digraph G {
+
+	rankdir=LR;
+
+	subgraph cluster_unix_client {
+	label="UNIX Client";
+	mountpoint [ label="/mnt/shareddocs" ];
+	}
+
+	subgraph cluster_windows_client {
+	label="Windows Client";
+	networkdrive [ label="S:" ];
+	}
+
+	subgraph cluster_server {
+	label="Server";
+	share [ label="SharedDocs" ];
+	folder [ label="C:\shareddocs" ];
+	share -> folder;
+	}
+
+	mountpoint -> share;
+	networkdrive -> share;
+}
