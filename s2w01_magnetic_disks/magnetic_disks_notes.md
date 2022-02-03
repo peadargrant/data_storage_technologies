@@ -131,8 +131,9 @@ Capacity
 ========
 
 Disk capacity is normally expressed in bytes, or suitable multiples like
-or . A confusing situation exists regarding actual vs advertised
-capacity.
+MB, GB, TB.
+A confusing situation exists regarding actual vs advertised
+capacity:
 
 -   Normally when dealing with binary units like bits and bytes, we use
     binary prefixes, taking the multiplier to be 1024.
@@ -183,104 +184,4 @@ This process can also be written as a formula:
 
 where $x$ depends on the units in question as above.
 
-Disk service time
-=================
 
-The disk service time, TS is the time taken by a disk to complete an
-I/O request, composed of:
-
-1. the seek time, T
-2. average rotational latency, L
-3. data transfer time, X
-
-where:
-
-	TS = T + L + X
-
-Seek / access time
-------------------
-
-Seek time is the time required to position the head on the correct
-track. Obviously this isn’t uniform, so seek time is given separately:
-
-Full stroke:
-
-:   time taken to move from innermost to outermost track.
-
-Track-to-track:
-
-:   time taken to move between adjacent tracks.
-
-Average:
-
-:   time taken to move head from one random track to another.
-
-We are normally concerned with the average seek time, defined as
-one-third of the full stroke:
-
-	average seek time = full-stroke seek time / 3
-	full-stroke seek time = full-stroke seek time * 3
-	
-Typical average seek times would range from .
-
-Example: Calculate the full-stroke seek time for a drive given an average seek time of 6ms.
-
-	full-stroke seek time = 6 ms * 3
-	                      = 18ms
-
-Rotational latency
-------------------
-
-The average rotational latency, L, is the time taken for the drive to
-revolve half a revolution:
-
-	L = 0.5 / revolutions per second
-
-This measure depends on drive speed, we must convert RPM to
-revolutions per second.
-
-Example: Rotational latency: Determine the average rotational latency for a 5400-rpm drive:
-
-	5400 RPM = 5400 / 60 RPs
-		     = 90 RPs
-           L = 0.5 / 90 
-             = 5.5 ms
-
-
-Internal transfer time (X)
---------------------------
-
-The data transfer time is how long it takes for one block of data (at a
-given size) to be transferred inside the drive.
-
-	X = block size / internal transfer rate
-
-Example: Internal transfer time
-Determine the transfer time given an internal transfer rate of and a
-block size of .
-
-    X = 32kB / 40 MB/s
-      = ( 32 * 1024 ) / ( 40 * 1024 * 1024 )
-      = 0.78 ms
-
-IOPS
-----
-
-Storage performance is commonly quantified in Input/Output operations
-Per Second (or IOPS), which is the reciprocal of the disk service time, TS.
-
-	IOPS = 1.0 / TS
-
-Native command queueing
-=======================
-
-![Native command queueing](ncq_diagram.svg)
-
-A hard disk receives multiple commands in quick succession. Each command
-will be delayed by seek time and rotational latency.
-
-SATA Native Command Queueing tries to optimise the overall latency by
-re-ordering the commands to reduce these latencies, .
-
-All NCQ algorithms will optimise the seek time, but some will also
-optimise the rotational latency.
