@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Magnetic disks notes</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="../notes.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header>
+<h1 class="title">Magnetic disks notes</h1>
+</header>
+<h1 id="components">Components</h1>
+<figure>
+<img src="hard_drive_components_3d.svg" alt="Hard drive components" /><figcaption>Hard drive components</figcaption>
+</figure>
+<ul>
+<li><p>Hard disk drives encased with controller board and power / data connectors.</p></li>
+<li><p>1 or more aluminimum platters mounted on spindle separated by a small gap.</p></li>
+<li><p>Spindle attached to motor spins platters at constant speed. (Usually 5400, 7200 or 10000 RPM)</p></li>
+<li><p>Platters (2-sided) coated with magnetically susceptible material.</p></li>
+<li><p>Heads mounted on an actuator arm, moves all heads simultaneously.</p></li>
+<li><p>Heads are separated from the platter by a small air gap known as the “head flying height” which is maintained by a cushion of air.</p>
+<ul>
+<li><p>Before stopping the platter’s rotation, the heads are moved towards the “landing zone”.</p></li>
+<li><p>If the heads contact the disk otherwise it is known as a “head crash” and risks loss of data.</p></li>
+</ul></li>
+</ul>
+<h1 id="geometry">Geometry</h1>
+<figure>
+<img src="disk_geometry.svg" alt="Disk geometry" /><figcaption>Disk geometry</figcaption>
+</figure>
+<dl>
+<dt>Tracks:</dt>
+<dd><p>concentric rings on each platter. Because of multiple platters, each with two sides, normally refer to cylinder and head to uniquely identify a track:</p>
+<dl>
+<dt>Cylinder:</dt>
+<dd><p>identical set of tracks on both surfaces of all drive platters, numbered from zero at outer edge.</p>
+</dd>
+<dt>Head:</dt>
+<dd><p>head identifies which platter and side that the track identified by the cylinder is located within.</p>
+</dd>
+</dl>
+</dd>
+<dt>Sector / block:</dt>
+<dd><p>subdivisions of tracks, each numbered from 1.</p>
+</dd>
+</dl>
+<h1 id="logical-block-addressing">Logical block addressing</h1>
+<p>In order to be able to locate our data, we need a way to address sectors:</p>
+<dl>
+<dt>Cylinder-Head-Sector (CHS)</dt>
+<dd><p>is a 3-part addressing scheme, where the head identifies the platter and side, the cylinder picks the track and the sector is with reference to the track. Host needs to be aware of disk geometry:</p>
+</dd>
+<dt>Logical Block Addressing (LBA)</dt>
+<dd><p>is a simple linear addressing scheme, where the drive controller translates the linear address starting from zero to the 3-part C-H-S address.</p>
+</dd>
+</dl>
+<p>Address in CHS and LBA format are internally binary numbers and often appear on real systems in hex form. However, they can be understood and manipulated as integers for familiarisation purposes.</p>
+<h2 id="converting-chs-to-lba">Converting CHS to LBA</h2>
+<p>The logical block address (LBA) for a given <span class="math inline"><em>C</em>, <em>H</em>, <em>S</em></span> tuple corresponding to the cylinder, head and sector is given by the formula:</p>
+<pre><code>LBA = ( C * HPC + H ) * SPT + ( S - 1 )</code></pre>
+<p>where</p>
+<ul>
+<li><p>HPC is the number of heads per cylinder</p></li>
+<li><p>SPT is the number of sectors per track</p></li>
+</ul>
+<h2 id="converting-lba-to-chs">Converting LBA to CHS</h2>
+<p>The LBA to CHS operation requires three different formulas:</p>
+<pre><code>C = LBA / ( HPC * SPT )
+H = ( LBA / SPT ) % HPC
+S = ( LBA % SPT ) + 1</code></pre>
+<p>Noting that:</p>
+<ul>
+<li><p>The <code>/</code> symbol means integer division where any fractional remainder is truncated (NOT rounded)</p></li>
+<li><p>The <code>%</code> symbol means modulo, i.e. the remainder.</p></li>
+</ul>
+<p>As a sanity check, remember also that H must be less than the number of heads per cylinder and that S must be less than or equal to the number of sectors per track:</p>
+<pre><code>H &lt; HPC 
+S &lt;= SPT</code></pre>
+<h1 id="zoned-bit-recording">Zoned bit recording</h1>
+<figure>
+<img src="zoned_bit_recording.png" alt="Zoned bit recording" /><figcaption>Zoned bit recording</figcaption>
+</figure>
+<p>Zoned bit recording increases the storage capacity of the disks by accounting for the varying density of sectors from the spindle to the edge:</p>
+<ul>
+<li><p>Cylinders are grouped into zones based on their distance from the spindle.</p></li>
+<li><p>The zones are numbered (like cylinders) from zero at the disk edge.</p></li>
+<li><p>Suitable number of sectors per cylinder assigned within each zone.</p></li>
+</ul>
+<h1 id="capacity">Capacity</h1>
+<p>Disk capacity is normally expressed in bytes, or suitable multiples like or . A confusing situation exists regarding actual vs advertised capacity.</p>
+<ul>
+<li><p>Normally when dealing with binary units like bits and bytes, we use binary prefixes, taking the multiplier to be 1024.</p></li>
+<li><p>Drive manufacturers however like to use a decimal prefixes (multiplier of 1000) when advertising, since it leads to higher numbers for the same disk capacity.</p></li>
+</ul>
+<h2 id="converting-from-advertised-to-actual-capacity">Converting from advertised to actual capacity</h2>
+<p>To convert from advertised capacity to actual capacity:</p>
+<ol type="1">
+<li><p>Re-write the advertised capacity in bytes by multiplying successively by 1000 to remove the decimal prefix, leaving the answer in bytes.</p></li>
+<li><p>Successively divide the capacity in bytes by 1024 to re-write using binary prefixes</p></li>
+</ol>
+<p>We could try to write this as a formula:</p>
+<pre><code>actual = ( advertised * 1000^x ) / 1024^x</code></pre>
+<p>where <code>x</code> depends on the units in question:</p>
+<pre><code>kB =&gt;  x = 1
+MB =&gt;  x = 2
+GB =&gt;  x = 3
+TB =&gt;  x = 4
+PB =&gt;  x = 5</code></pre>
+<h2 id="converting-from-actual-to-advertised-capacity">Converting from actual to advertised capacity</h2>
+<p>To convert from actual capacity to advertised capacity:</p>
+<ol type="1">
+<li><p>Re-write the actual capacity in bytes by multiplying successively by 1024 to remove the binary prefix, leaving the answer in bytes.</p></li>
+<li><p>Successively divide the capacity in bytes by 1000 to re-write using decimal prefixes.</p></li>
+</ol>
+<p>This process can also be written as a formula:</p>
+<pre><code>advertised = actual * 1024^x / 1000^x</code></pre>
+<p>where <span class="math inline"><em>x</em></span> depends on the units in question as above.</p>
+</body>
+</html>
