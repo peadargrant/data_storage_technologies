@@ -36,8 +36,8 @@
 </dl>
 <p>We are normally concerned with the average seek time, defined as one-third of the full stroke:</p>
 <pre><code>average seek time = full-stroke seek time / 3
-full-stroke seek time = full-stroke seek time * 3</code></pre>
-<p>Typical average seek times would range from .</p>
+full-stroke seek time = average seek time * 3</code></pre>
+<p>Typical average seek times would range from 5-20ms.</p>
 <p>Example: Calculate the full-stroke seek time for a drive given an average seek time of 6ms.</p>
 <pre><code>full-stroke seek time = 6 ms * 3
                       = 18ms</code></pre>
@@ -53,7 +53,7 @@ full-stroke seek time = full-stroke seek time * 3</code></pre>
 <h2 id="internal-transfer-time-x">Internal transfer time (X)</h2>
 <p>The data transfer time is how long it takes for one block of data (at a given size) to be transferred inside the drive.</p>
 <pre><code>X = block size / internal transfer rate</code></pre>
-<p>Example: Internal transfer time Determine the transfer time given an internal transfer rate of and a block size of .</p>
+<p>Example: Internal transfer time Determine the transfer time given an internal transfer rate of 40MB/s and a block size of 32kB.</p>
 <pre><code>X = 32kB / 40 MB/s
   = ( 32 * 1024 ) / ( 40 * 1024 * 1024 )
   = 0.78 ms</code></pre>
