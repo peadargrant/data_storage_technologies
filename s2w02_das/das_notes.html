@@ -36,8 +36,8 @@
 </dl>
 <p>We are normally concerned with the average seek time, defined as one-third of the full stroke:</p>
 <pre><code>average seek time = full-stroke seek time / 3
-full-stroke seek time = full-stroke seek time * 3</code></pre>
-<p>Typical average seek times would range from .</p>
+full-stroke seek time = average seek time * 3</code></pre>
+<p>Typical average seek times would range from 5-20ms.</p>
 <p>Example: Calculate the full-stroke seek time for a drive given an average seek time of 6ms.</p>
 <pre><code>full-stroke seek time = 6 ms * 3
                       = 18ms</code></pre>
@@ -53,7 +53,7 @@ full-stroke seek time = full-stroke seek time * 3</code></pre>
 <h2 id="internal-transfer-time-x">Internal transfer time (X)</h2>
 <p>The data transfer time is how long it takes for one block of data (at a given size) to be transferred inside the drive.</p>
 <pre><code>X = block size / internal transfer rate</code></pre>
-<p>Example: Internal transfer time Determine the transfer time given an internal transfer rate of and a block size of .</p>
+<p>Example: Internal transfer time Determine the transfer time given an internal transfer rate of 40MB/s and a block size of 32kB.</p>
 <pre><code>X = 32kB / 40 MB/s
   = ( 32 * 1024 ) / ( 40 * 1024 * 1024 )
   = 0.78 ms</code></pre>
@@ -133,7 +133,7 @@ full-stroke seek time = full-stroke seek time * 3</code></pre>
 <p>The average response time, <span class="math inline"><em>R</em></span>, depends on the disk service time, taking into account the controller utilisation:</p>
 <pre><code>R = Ts / ( 1 - U )</code></pre>
 <p>Example: Response time under load The disk service time of a disk under no load is 7.8ms. What would the response time expected under 70% load be?</p>
-<pre><code>R = 7.8ms ( 1 - 0.7 )
+<pre><code>R = 7.8ms / ( 1 - 0.7 )
   = 26ms</code></pre>
 <h2 id="iops-vs-utilisation">IOPS vs utilisation</h2>
 <p>A drive will be advertised as capable of doing a certain number of IOPS. However, if we want to keep response times within a certain limit, we may limit the number of IOPS to a certain number.</p>
@@ -147,7 +147,7 @@ full-stroke seek time = full-stroke seek time * 3</code></pre>
 <li><p>Number of disks required to meet the capacity, DC.</p></li>
 <li><p>Number of disks required to meet the application IOPS requirement, DI, at a given utilisation U.</p></li>
 </ul>
-<p>The higher of these two quantities determine D:</p>
+<p>The higher of these two quantities determine DR:</p>
 <pre><code>DR = max ( DC, DI) </code></pre>
 <p>Note that this requirement does not specify at what level the disks are combined.</p>
 <h2 id="meeting-iops-requirement">Meeting IOPS requirement</h2>
