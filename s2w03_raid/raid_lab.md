@@ -2,7 +2,7 @@
 title: RAID problem set
 ---
 
-1.  Generate the truth table for the XOR $(\oplus)$ operation.
+1.  Generate the truth table for the XOR operation.
 
 2.  In a RAID-5 set, data is split in a stripe into 4 data blocks and
     one parity block. The first bit of each block in a particular stripe
