@@ -1,7 +1,8 @@
 % DST CA1 specification
 
-THIS IS STILL A DRAFT!
-DO NOT START WORKING ON THIS!
+*Weight*: 40%
+
+*Due date:* as on Moodle
 
 Introduction
 ============
@@ -26,9 +27,9 @@ Aims (20%)
 
 Explaining the broad area of study, the problem that you are going to
 address, the key factors (cost, security, longevity) and the rationale
-for its study. This can be either in plain text `aims.txt` or PDF
-`aims.pdf`. Consider a diagram that shows the problem to be addressed,
-which can be used as the basis of the next section.
+for its study.
+Bullet point form preferred (target 3-6 bullets).
+Must be in plain text `aims.txt`.
 
 Architectural diagram (30%) {#sec:architectural-diagram}
 ---------------------------
@@ -44,21 +45,19 @@ to consider: redundancy, remote management, power supply.
 Implementation (30%)
 --------------------
 
-Provide a implementation plan in the plain text file
-`implementation.txt` or PDF `implementation.pdf` files. This should
+Provide a implementation plan in max 2 page PDF `implementation.pdf`. This should
 detail step-by-step how to build the architecture in . You should
 provide the commands or script files for some operations, if possible.
 
 Limitations (20%)
 -----------------
 
-Identify the limitations in your design in either text `limitations.txt`
-or PDF `limitations.pdf` format. Are the limitations justifiable in the
-context of the problem you set out to solve?
+Identify 2-4 limitations in your design as bullet points in `limitations.txt`.
+Are the limitations justifiable in the context of the problem you set out to solve?
 
 Presentation
 ============
 
-This CA requires demonstration / presentation (no slides required). To
+This CA may require demonstration / presentation (no slides required). To
 be scheduled by the lecturer after the deadline. Submissions received
 where student does not attend for demonstration will receive zero.

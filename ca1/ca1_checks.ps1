@@ -1,7 +1,7 @@
 "Checks for Cloud Architecture CA2"
 " "
 
-$files = @(@("aims.txt"), @("architecture.pdf"), @("implementation.txt","implementation.pdf"), @("limitations.txt","limitations.pdf"))
+$files = @(@("aims.txt"), @("architecture.pdf"), @("implementation.pdf"), @("limitations.txt"))
 
 $problems = 0
 $check = 0
