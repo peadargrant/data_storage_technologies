@@ -1,0 +1,136 @@
+\chapter{SAN design}
+\label{ch:san-design}
+
+\section{Purpose}
+\label{purpose}
+
+There are a few primary patterns of storage provided by SAN:
+
+\begin{description}
+\item[Online host-specific block storage]
+essentially replacing directly-attached block devices on the hosts.
+\item[Online clustered block storage]
+allowing a number of hosts to share a block device that is formatted
+with a clustered/shared file system.
+\item[Offline block storage]
+replacing removeable drives on hosts. This may be for archival purposes.
+\item[Backup]
+where the SAN facilitates access to block devices for backup. These may
+be disk-backed LUNs on storage appliance. May also include tape-based
+backup systems on SAN-attached tape equipment.
+\end{description}
+
+Some additional host-specific questions:
+
+\begin{itemize}
+\item
+  Will hosts be booting from the SAN? (There are a number of ways to
+  provision this.)
+\item
+  Are the hosts
+\end{itemize}
+
+\section{SAN type}\label{san-type}
+
+A major decision is whether to deploy FC or IP SAN.
+
+\begin{description}
+\item[Motivation for IP SAN]
+Low/no-cost entry; leverage knowledge; re-use of infrastructure;
+multi-site capable if IP routed.
+\item[Motivation for FC SAN]
+Performance; reliability; inherent SAN/LAN demarcation.
+\end{description}
+
+Other notes:
+
+\begin{itemize}
+\item
+  Problem-solving technologies available: FCoE, FCoIP, iSCSI-FC
+  bridging. Unwise to base network around these technologies.
+\item
+  Depending on organisation structure and culture, there may be
+  different teams responsible for storage vs general-purpose networking.
+\end{itemize}
+
+\section{High Availability}\label{high-availability}
+
+SANs hold high-value information critical to continuity of service. A
+naively designed SAN may exhibit worse availability characteristics than
+simple direct-attached storage on individual hosts.
+
+\subsection{Storage layer
+availability}\label{storage-layer-availability}
+
+Storage appliances normally include a number of features to ensure high
+availability, .
+
+\begin{description}
+\item[Disk redundancy]
+where volumes / LUNs are provisioned such that the array is redundant
+against disk failures. May include RAID, hot spares etc.
+\item[Dual power-supply]
+where each storage applicance has two Power Supply Units (PSU). Each PSU
+independently capable of supporting the load.
+
+\begin{itemize}
+
+\item
+  Data centre environment should have dual power supply to take full
+  advantage of dual PSU.
+\end{itemize}
+\item[Redundant cooling components]
+permitting the storage appliance to continue operating despite the
+failure of 1 (or sometimes more) fans. Should be easily replaced. Often
+hot swappable.
+\item[Dual controller]
+where the storage array has two controller modules
+(i.e.~high-performance embedded computer). This normally works so that
+either controller can independently provide all services. May be hot
+swappable, .
+\item[Remote management capabilities]
+that allow the storage appliance to alert administrators should any
+failures occur. Essential that all alerts are enabled and acted upon to
+avoid storage appliance remaining in a degraded state (e.g.~failed PSU)
+as redundancy will hide this situation.
+\end{description}
+
+\subsection{Fabric layer availability}\label{fabric-layer-availability}
+
+The fabric (regardless of type) can represent a significant single point
+of failure. Consider the simple SAN layout in .
+
+This is vulnerable to a failure of the switch SW1. Duplicating the SAN
+fabric averts this, .
+
+SAN fabric components (e.g.~switches) should be dual-powered where
+possible. This may be via dual-PSU or via external transfer switches.
+
+\subsection{Host layer availability}\label{host-layer-availability}
+
+Assuming that there is redundancy in the fabric, the host layer requires
+approriate redundancy to connect to the fabric.
+
+To transparently utilise the redundant fabric we must ensure that
+multipathing is correctly configured.
+
+\subsection{Data centre environment}\label{data-centre-environment}
+
+A SAN will normally be provisioned within a data centre environment. We
+should assume at a minimum:
+
+\begin{description}
+\item[Power supply]
+is protected by UPS, possibly generator and has diverse A and B power
+paths.
+\item[Cooling]
+is sufficient to meet the load and incorporates redundancy to maintain
+operation in the event of a failure.
+\item[Fire detection and suppression]
+to protect data and ensure service availability.
+\item[Physical security]
+appropriate to the data and service risk profile.
+\end{description}
+
+The provision of a SAN should dictate that the infrastructural services
+are sufficient.

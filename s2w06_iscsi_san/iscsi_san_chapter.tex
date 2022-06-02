@@ -1,0 +1,566 @@
+\chapter{IP SAN}
+\label{ch:ip-san}
+
+\section{SAN}\label{san}
+
+A storage area network provides \textbf{hosts} (servers, desktops,
+workstations) with access to consolidated \textbf{block-level storage}
+by means of a \textbf{fabric}.
+
+\subsection{Layers}\label{layers}
+
+SANs are traditionally broken up into conceptual layers, .
+
+\begin{description}
+\item[Host layer:]
+consisting of the servers / computers that access storage provisioned
+through the SAN.
+\item[Fabric layer:]
+containing the networking cabling and hardware: hubs, switching,
+routing, protocol converters.
+\item[Storage layer:]
+consisting of storage appliances such as disk arrays, tape drives.
+\end{description}
+
+\subsection{SCSI}\label{scsi}
+
+Small Computer Systems Interface (SCSI) is a protocol used to connect
+(mainly) storage devices to a host.
+
+\begin{description}
+\item[Parallel SCSI]
+using 50-pin and similar connectors
+\item[Serially-Attached SCSI (SAS)]
+drives are often seen as direct-attached storage in servers.
+\end{description}
+
+Because the protocol is well standardised, it often forms the basis of
+SAN as it's easy to encapsulate across a network.
+
+\subsection{SAN types}\label{san-types}
+
+\begin{description}
+\item[Fibre Channel]
+encapsulates SCSI commands in Fibre-Channel Protocol (FCP) normally
+carried on optical fibre. Also Fibre-Channel Over Ethernet (FCoE) and
+Fibre-Channel over IP.
+\item[iSCSI]
+encapsulates SCSI commands in iSCSI protocol on TCP/IP carried over
+standard IP network.
+\item[Multiheaded-SAS]
+\end{description}
+
+\subsection{Key concepts}\label{key-concepts}
+
+\begin{itemize}
+\item
+  Storage appliances (like disk arrays) are set up with logical volumes.
+  Due to historical SCSI terminology, these are called Logical Unit
+  Numbers (LUNs).
+\item
+  A storage device exposes a \textbf{target} that has one or more
+  logical block devices LUNs associated with it.
+
+  \begin{itemize}
+  
+  \item
+    Nowadays, most storage appliances can expose more than one target.
+    Helps later with access control.
+  \end{itemize}
+\item
+  To access block storage over a SAN, a host's \textbf{initiator}
+  connects to a specific LUN on a specific target:
+
+  \begin{itemize}
+  \item
+    The initiator is normally a Host-Bus Adapter. Like HBAs for DAS, HBA
+    must match host's bus type and the type of SAN being used.
+  \item
+    Can also have software-initiators for iSCSI and FCOIP.
+  \item
+    Although iSCSI and FCOIP are IP-based, HBA is separate to host's
+    normal networking.
+  \item
+    The NIC and HBA can be combined on a single card known as a
+    Converged Networking Adapter (CNA).
+  \end{itemize}
+\end{itemize}
+
+\subsection{Usage points}\label{usage-points}
+
+\begin{itemize}
+\item
+  Normally, a LUN can be attached to only one host at a time.
+\item
+  As a block device, the host OS is entirely in control of the LUN
+  (e.g.~formatting).
+\item
+  With a SAN HBA, the host OS is unaware that the disk is not a
+  locally-attached disk:
+
+  \begin{itemize}
+  \item
+    Boot-from-SAN possible with no local hard disk.
+  \item
+    SAN can be transparently used on mission-critical legacy systems
+    (like Xenix, OS/2).
+  \end{itemize}
+\item
+  SAN can feature in backup configurations.
+\end{itemize}
+
+\subsection{Non-shared storage}\label{non-shared-storage}
+
+iSCSI conceptually just extends the physical disk drive cable over a
+network. Just as we can't normally connect a hard disk to two computers
+at the same time, we can't \emph{normally} have two initiators logged
+into the same LUN at the same time.
+
+\begin{itemize}
+\item
+  There is no problem detaching a LUN from a host and attaching it to
+  another.
+\item
+  LUNs that are read-only can be attached to multiple machines at the
+  same time.
+\item
+  There are so-called clustered filesystems available that permit
+  multiple machines access to the same LUN at the same time. Used only
+  in certain specific applications.
+\end{itemize}
+
+Some targets will permit only a single connection to a LUN. Others will
+permit multiple connections, and data corruption is bound to occur if
+this happens.
+
+\subsection{SAN vs NAS}\label{san-vs-nas}
+
+A SAN is distinct from NAS in one key respect:
+
+\textbf{SAN \(\ne\) NAS}
+
+the SAN provisions a remote block level storage device for a host,
+whilst the NAS provides a remote file system. SAN and NAS are
+\emph{complementary} technologies that address \emph{different} use
+cases.
+
+\section{iSCSI}\label{iscsi}
+
+IP SAN refers to SAN configurations that run over a standard IP network.
+\footnote{We don't think about non-IP uses of Ethernet very often. Later
+  on, we'll see how a different type of SAN works over ethernet without
+  IP. Other specialised protocols exist too: many entertainment venues
+  use the Dante protocol to provide low-latency audio connections over
+  ethernet.} The most common type of IP SAN is iSCSI:
+
+\begin{itemize}
+\item
+  iSCSI allows hosts to attach themselves to remote block devices called
+  LUNs.\footnote{LUNs are logical unit numbers, a carry-over from SCSI}
+  Once attached, they are no different to a physical hard disk,
+  partition or logical volume.
+\item
+  iSCSI is very easy to get started using. It works over standard IP
+  networking and can obviously co-exist with other network usage. Key
+  software components are free and/or built-in to modern host OSes.
+\end{itemize}
+
+\subsection{Components}\label{components}
+
+A \textbf{host} uses an \textbf{initiator} to attach to a specified
+\textbf{target}, . The target may present as one or more \textbf{LUNs}.
+
+\begin{figure}
+\centering
+%\includegraphics{iscsi_initiator_target}
+\caption{iSCSI initiator and target{}}
+\end{figure}
+
+\subsection{Initiator}\label{initiator}
+
+\begin{itemize}
+\item
+  Once attached, the host is entirely responsible for creating /
+  managing filesystems on the LUN. \emph{This is the key difference to
+  Network Attached Storage (NAS).}
+\item
+  Initiator can be either:
+
+  \begin{description}
+  \item[Software-based:]
+  part of the host OS (usually kernel-level driver)
+  \item[Hardware-based:]
+  controller card or built-in to chipset on host. Has \emph{separate} IP
+  configuration to host. Usually separate physical port. Can be
+  \emph{converged network adapter (CNA)} where both host networking and
+  storage networking are on same physical port with different IP
+  addresses.
+  \end{description}
+\end{itemize}
+
+\begin{figure}
+\centering
+%\includegraphics{iscsi_offload}
+\caption{iSCSI offloading{}}
+\end{figure}
+
+\subsection{Encapsulation}\label{encapsulation}
+
+iSCSI carries SCSI commands over a standard TCP/IP network, .
+
+\begin{figure}
+\centering
+%\includegraphics{iscsi_stack}
+\caption{iSCSI stack{}}
+\end{figure}
+
+\subsection{Protocol data units (PDUs)}\label{protocol-data-units-pdus}
+
+iSCSI encapsulates SCSI commands within iSCSI protocol data units
+(PDUs), .
+
+\begin{figure}
+\centering
+%\includegraphics{iscsi_encapsulation}
+\caption{iSCSI encapsulation (EMC){}}
+\end{figure}
+
+The encapsulation can be seen also in terms of how commands are
+processed, .
+
+\begin{figure}
+\centering
+%\includegraphics{iscsi_write}
+\caption{iSCSI write{}}
+\end{figure}
+
+\section{Targets}\label{targets}
+
+A \textbf{target} presents one or more \textbf{LUNs} to an initiator:
+Targets can be provided in a number of ways: software target on a normal
+server OS, specialised SAN appliance. Some cheaper NAS units have iSCSI
+target capability also. iSCSI initiators connect to targets that present
+one or more LUNs.
+
+\subsection{Target hardware}\label{target-hardware}
+
+\begin{description}
+\item[Dedicated storage appliances]
+for iSCSI storage:
+
+\begin{itemize}
+\item
+  Often contain multiple drive holders.
+\item
+  Can set up one or more RAID sets in multiple levels, possibly with hot
+  spares.
+\item
+  Can provision logical volumes on RAID sets (thin or thick provisioned)
+\item
+  Presents as one or more targets, each with one or more LUNs.
+\item
+  Tightly integrated hardware and custom OS (often Linux/Unix
+  underneath).
+\item
+  Designed for high availability, hot swap dual PSUs, redundant net
+  interfaces.
+\item
+  Often has management features like lights-out management card, SNMP
+  support, web and CLI management.
+\end{itemize}
+\item[General-purpose servers]
+using iSCSI target software:
+
+\begin{itemize}
+\item
+  iSCSI target daemon can have one or more targets with one or more LUNS
+  set up.
+\item
+  LUNS can point to:
+
+  \begin{description}
+  \item[Physical partition]
+  or any other block device
+  \item[Logical volume]
+  (since it's just a block device)
+  \item[Disk image file]
+  in a number of possible formats
+  \end{description}
+\end{itemize}
+\item[NAS units]
+primarily designed for file sharing often offer some iSCSI capabilities:
+
+\begin{itemize}
+\item
+  Older units tended to use disk image files. More recent units tend to
+  use LVM-like setup with iSCSI LUN provisioned as a logical volume.
+\item
+  Cheap and easy way to experiment with iSCSI before committing to
+  financial outlay.
+\end{itemize}
+\end{description}
+
+Remember that as a network, an iSCSI storage scheme could encompass
+multiple servers drawn from all of the above.
+
+\subsection{Connection}\label{connection}
+
+To connect to a LUN we need to know:
+
+\begin{itemize}
+\item
+  The IP address or DNS name of the machine / device providing the
+  target service.
+\item
+  The name of the target that is presenting the LUN we want. (Can query
+  list of available targets from server)
+\end{itemize}
+
+The connection is made at the target level. Once made, all LUNs are
+visible to the initiator as block devices.
+
+\subsection{Target naming (IQNs)}\label{target-naming-iqns}
+
+iSCSI targets are named in a systematic way that can seem confusing at
+first. Each target has an iSCSI Qualified Name, or IQN. IQNs have 4
+parts:
+
+\begin{description}
+\item[iqn]
+literal string to denote this as an IQN.
+\item[naming authority]
+usually the reversed domain name of the company (sometimes storage
+appliance vendor)
+\item[date]
+when the naming authority assumed the name
+\item[target name string]
+defined by the naming authority (the format of these vary across
+different target server systems)
+\end{description}
+
+An example of an IQN might be:
+
+\begin{itemize}
+\item
+  \texttt{iqn.2019-12.ie.dkit.staffstorage} is an IQN for a target
+  \texttt{staffstorage} by the \texttt{dkit.ie} naming authority who
+  assumed control on \texttt{2019-12}.
+\end{itemize}
+
+In practice, the naming authority has nothing to do with DNS names other
+than by convention. For simple applications, once you know the DNS name
+/ IP of the server and the name of the target, you can normally discover
+the IQN automatically.
+
+Put simply, just accept that IQNs are strange-looking. As long as you
+distinguish one target from another you will not have difficulty.
+
+\subsection{Username / passwords}\label{username-passwords}
+
+iSCSI provides basic username/password authentication using the
+Challenge-Handshake Authentication Protocol (CHAP). CHAP secures a
+target rather than individual LUNs. CHAP is not particularly secure.
+Still on smaller networks, and to prevent mistakes, it's useful to
+require a username/password to connect to a target.
+
+Storage appliances and software target servers normally have the CHAP
+authentication as an option that can be enabled on a particular target.
+
+You can also set up the initiator to require a username/password from
+the target, known as mutual authentication. Having a server authenticate
+to a client can seem odd, but it makes sure you've got the right disk
+connected and that sensitive data isn't written to an incorrect
+location.
+
+\subsection{LUN masking}\label{lun-masking}
+
+LUN masking is where a target presents only a subset of its LUNs
+depending on what initiator is connecting. The LUNs that are masked from
+a particular initiator do not appear to exist at all.
+
+Support for LUN masking varies amongst target servers and storage
+appliances.
+
+\section{iSCSI initiator operations}\label{iscsi-initiator-operations}
+
+We will walk through the process of connecting to a LUN from the
+point-of-view of the initiator. We will not worry about how the LUN is
+provisioned at this point.
+
+Scenario: a target is provisioned on a storage server with IP address
+\texttt{192.168.1.4}. Naming authority is \texttt{storage.com} starting
+from December 2019 (\texttt{2019-12}). Target is named \texttt{stuff}.
+There are two LUNs in this target.
+
+\subsection{Linux software initiator}\label{linux-software-initiator}
+
+There are two parts to iSCSI on Linux: the kernel driver itself and the
+surrounding software to administer iSCSI connections. Most linux
+distributions nowadays use the open-iscsi package. Other UNIX variants
+like FreeBSD have similar functionality.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Host installs the \texttt{open-iscsi} package which provides the
+  \texttt{iscsiadm} command. All \texttt{iscsiadm} commands need to be
+  run as root (using sudo, omitted from steps below).
+\item
+  Host runs \textbf{discovery} on the server to see available targets:
+
+\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{iscsiadm} \NormalTok{--mode discovery --type sendtargets --portal 192.168.1.4}
+\end{Highlighting}
+\end{Shaded}
+\end{verbatim}
+
+  Note you can abbreviate mode, type and portal switches as
+  \texttt{m,\ t,\ p} as per the man page. The available targets will
+  appear (this has just one):
+
+\begin{verbatim}
+192.168.1.4:3260,1 iqn.2019-12.com.storage:stuff
+\end{verbatim}
+
+  May see a second line for each target if the server is running both
+  IPv4 and IPv6.
+\item
+  Host \textbf{logs in} to the target:
+
+\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{iscsiadm} \NormalTok{-m node -T iqn.2019-12.com.storage:stuff -p 192.168.1.4 --login}
+\CommentTok{# note here we use the short m, p switches}
+\end{Highlighting}
+\end{Shaded}
+\end{verbatim}
+
+  Assuming the login step is successful, the LUNs on the target will
+  appear as locally attached SCSI disks. So they will appear in
+  \texttt{/dev} directory as \texttt{/dev/sd?} where ? is the drive
+  letter.
+\item
+  The host then can partition and format these disks as if they were
+  locally attached physical devices. Usually GPT/MBR single partition.
+\item
+  Host can disconnect by \textbf{logging out}:
+
+\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{iscsiadm} \NormalTok{-m node -T iqn.2019-12.com.storage:stuff -p 192.168.1.4 --logout}
+\end{Highlighting}
+\end{Shaded}
+\end{verbatim}
+
+  This is like plugging out a disk. Therefore the filesystems need to be
+  unmounted (ejected) before issuing the logout command.
+\item
+  Normally we would enable automatic login and ensure the iscsi service
+  is set to start at boot-up.
+\end{enumerate}
+
+\subsection{Windows software
+initiator}\label{windows-software-initiator}
+
+Windows has a software initiator for iSCSI built-in to the operating
+system. This can be accessed graphically or via PowerShell. Once
+attached to a target, the LUN(s) appear in the Logical Disk Management
+display and can be partitioned and formatted etc as normal.
+
+\subsection{Hardware HBA}\label{hardware-hba}
+
+Hardware HBA allows attachment to iSCSI target without the knowledge of
+the host OS.
+
+\begin{itemize}
+\item
+  Hardware HBA has its own independent connection to the network,
+  separate to the host OS. It is a separate interface, with separate IP
+  address etc.
+\item
+  HBA normally appears to the host OS as a SCSI disk controller card.
+\item
+  Some HBAs have a side-channel to the host OS (often appearing as a
+  serial port) for management purposes. Some also include configuration
+  tools / software.
+\end{itemize}
+
+\section{Target provisioning
+operations}\label{target-provisioning-operations}
+
+iSCSI provision requires the \texttt{tgt} server program. The iSCSI
+\texttt{tgt} server can expose physical block devices, partitions,
+logical volumes (basically anything with an entry in \texttt{/dev}) as a
+LUN. It can also expose a disk image file on the filesystem as a LUN.
+
+\texttt{tgt} can be installed on Ubuntu/Debian using:
+
+\begin{verbatim}
+\begin{Shaded}
+\begin{Highlighting}[]
+  \ExtensionTok{apt-get} \NormalTok{install -y tgt}
+\end{Highlighting}
+\end{Shaded}
+\end{verbatim}
+
+Imagine our server has LVM set up with a volume group called
+\texttt{vg\_main} (possibly amongst others) on it. This VG contains a
+number of logical volumes, including \texttt{lv\_data}. We want to
+expose \texttt{lv\_data} as a LUN on an iSCSI target. Obviously the
+\texttt{lv\_data} volume should not be mounted on the host.
+
+\subsection{Basic target and LUN}\label{basic-target-and-lun}
+
+The \texttt{tgt} server program is controlled from the file
+\texttt{iscsi.conf} located in the \texttt{/etc/tgt/conf.d} folder. The
+\texttt{iscsi.conf} is almost XML-like and defines one or more targets
+with one or more LUNs. Each target section defines one or more LUNs.
+
+This example shows a target \texttt{iqn.2020-03.ie.peadargrant}
+containing one LUN backed by the logical volume
+\texttt{/dev/vg\_main/lv\_data}:
+
+\begin{verbatim}
+<target iqn.2020-03.ie.peadargrant>
+    backing-store /dev/vg_main/lv_data
+</target>
+\end{verbatim}
+
+The iSCSI target server needs to be restarted to pick up any changes:
+
+\begin{verbatim}
+sudo systemctl restart tgt
+\end{verbatim}
+
+We can use the \texttt{tgtadm} command to print out information about
+the running tgt server:
+
+\begin{verbatim}
+tgtadm --mode target --op show
+\end{verbatim}
+
+Output looks like:
+
+We can then connect to the running tgt server from another machine using
+any iSCSI initiator. It doesn't matter whether it's a hardware HBA or
+CNA or a software initiator, or what OS is involved.
+
+\subsection{CHAP authentication}\label{chap-authentication}
+
+Our example above could require for example, \texttt{student} and
+\texttt{1Password} as follows:
+
+\begin{verbatim}
+<target iqn.2020-03.ie.peadargrant>
+    backing-store /dev/vg_main/lv_data
+    incominguser student 1Password
+</target>
+\end{verbatim}
+
+If you want mutual authentication, the \texttt{outgoinguser} parameter
+works in the same way as \texttt{incominguser} to handle this. Obviously
+the initiator will need to be set up correctly too.

@@ -1,5 +1,4 @@
 *.mp4
-
 _minted-*
 auto/
 *.aux
@@ -7,3 +6,18 @@ auto/
 *.fls
 *.log
 *.out
+dst_notes.tex
+index.html
+index*.html
+*.4ct
+*.4tc
+index.css
+*.dvi
+*.idv
+*.lg
+*.tmp
+*.xref
+*.lof
+*.lot
+*.toc
+dst_notes.pdf

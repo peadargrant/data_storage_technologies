@@ -1,0 +1,70 @@
+\chapter{Replication}
+\label{ch:replication}
+
+\section{Replication}\label{replication}
+
+We primarily consider \emph{remote} replication and assume a SAN-based
+environment.
+
+\subsection{Terminology}\label{terminology}
+
+\begin{description}
+\item[Production host]
+in normal operations runs applications that access \emph{source} data.
+\item[Source]
+or production LUNs (volumes) hold data normally accessed by the
+production host.
+\item[Target]
+LUN(s) where production data is replicated
+\item[Recoverability]
+is the restoration of data from replicas to source.
+\item[Restartability]
+is the restart of business operations using the replicas.
+\end{description}
+
+\subsection{Point-in-time vs continuous
+replica}\label{point-in-time-vs-continuous-replica}
+
+\begin{description}
+\item[Point-in-time]
+is a snapshot of the source LUN at some particular time.
+\item[Continuous]
+replica is in sync with the production data under normal operation.
+\end{description}
+
+\subsection{Replica uses}\label{replica-uses}
+
+\begin{description}
+\item[Alternative backup source]
+from a PIT replica to avoid impacting on production performance.
+\item[Fast recovery]
+on source device failure: restoring data to different new source device
+or restarting production directly on the replica.
+\item[Reporting or analytics]
+undertaken on replica to avoid impacting production performance.
+\item[Testing platform]
+for testing changes / updates on a testing environment before applying
+to production environment.
+\end{description}
+
+\section{Modes}\label{modes}
+
+There are two replication modes, synchronous and asynchronous.
+
+\subsection{Synchronous}\label{synchronous}
+
+shows the general sequence of synchronous replication.
+
+\subsection{Asynchronoous}\label{asynchronoous}
+
+\section{Technologies}\label{technologies}
+
+\subsection{Host-based}\label{host-based}
+
+\subsection{Array-based}\label{array-based}
+
+\subsubsection{Synchronous}\label{synchronous-1}
+
+\subsubsection{Asynchronous}\label{asynchronous}
+
+\subsection{Network-based}\label{network-based}

@@ -1,0 +1,134 @@
+\chapter{Backup}
+\label{ch:backup}
+
+\section{Backup}\label{backup}
+
+You will find most of the ideas in {[}@ism-book{]}.
+
+\subsection{Terminology}\label{terminology}
+
+\begin{description}
+\item[Production data]
+is actively used in the course of day-to-day operations.
+\item[Backup:]
+additional copy of production data that is created and retained for the
+sole purpose of recovering lost or corrupted data.
+\item[Archive:]
+store of data that is no longer actively used that is retained on
+low-cost secondary storage.
+\end{description}
+
+\subsection{Purpose}\label{purpose}
+
+\begin{description}
+\item[Disaster recovery]
+where production systems are damaged / destroyed.
+\item[Operational recovery]
+where data loss / corruption occurs due to application failure or user
+error (e.g.~important email deleted).
+\item[Archival]
+for regulatory compliance, historical record, later analysis etc.
+\end{description}
+
+\subsection{Parameters}\label{parameters}
+
+\begin{description}
+\item[Recovery Point Objective (RPO)]
+the most recent point in time to which we should be able to restore.
+Dictates backup frequency.
+\item[Recovery Time Objective (RTO)]
+is the time taken to restore the system to the RPO point after an
+incident occurs.
+\end{description}
+
+\subsection{Methods}\label{methods}
+
+\begin{description}
+\item[Hot / online:]
+production system is running during backup:
+
+\begin{itemize}
+\item
+  Does not interrupt normal operation
+\item
+  Issues with open files, particularly database backend stores.
+\end{itemize}
+\item[Cold / offline:]
+production system is shut-down for normal operations.
+\end{description}
+
+\subsection{Scope}\label{scope}
+
+Scope refers to what is actually backed up:
+
+\begin{itemize}
+\item
+  Files themselves
+\item
+  Files and their layout (e.g.~folders, symlinks)
+\item
+  Metadata (permissions, last updated)
+\item
+  Is a \emph{Bare Metal Recovery} required?
+\end{itemize}
+
+\section{Backup granularity}\label{backup-granularity}
+
+There are three common granularities of backup, .
+\href{https://www.acronis.com/en-us/articles/incremental-differential-backups/}{See
+Acronis article} on different granularities for further info.
+
+\subsection{Full backup}\label{full-backup}
+
+Full backup contains the entire dataset:
+
+\begin{itemize}
+\item
+  Completeness.
+\item
+  Frequent full backups may be prohibitive in terms of time and/or
+  storage space.
+\end{itemize}
+
+\subsection{Incremenetal backup}\label{incremenetal-backup}
+
+Incremental backups store only the files changed since the most recent
+full or incremental backup was taken. Restoration steps are shown in .
+
+\subsection{Cumulative / Differential
+backup}\label{cumulative-differential-backup}
+
+Differential backup includes files changed since the last \textbf{full}
+backup. Restoration steps are shown in
+
+\section{Targets}\label{targets}
+
+Backup data is written to targets. Like any other storage media, targets
+may be directly attached to a host or may be LAN or SAN attached.
+
+\subsection{Disk}\label{disk}
+
+Disk-based backup has low cost, fast backup and recovery. Should be
+using monitored RAID to ensure backup availability.
+
+\subsection{Tape}\label{tape}
+
+Backup traditionally has used tape media.
+
+Tape drives are best operated such that they do not have to start/stop
+repeatedly during operation. Interleaving can be used so that multiple
+streams of data can be written to a tape at speed, .
+
+\subsection{Tape libraries}\label{tape-libraries}
+
+Tape backup can be provisioned on a tape library in medium-large
+installations, .
+
+\subsection{Virtual tape library}\label{virtual-tape-library}
+
+Virtual tape library emulates a tape library but is actually provisioned
+usually from SAN LUNs, .
+
+\subsection{Targets comparison}\label{targets-comparison}
+
+Comparison of different targets is given in .
