@@ -23,7 +23,7 @@ print $output '\documentclass{pgnotesbk}
 \ifpdf
 \tableofcontents
 \else
-\href{data_storage_tech_notes.pdf}{PDF version}
+\href{dst_notes.pdf}{PDF version}
 \fi
 
 ';
