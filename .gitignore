@@ -22,3 +22,11 @@ index.css
 *.toc
 dst_notes.pdf
 *.pdf
+*.idx
+*.ilg
+*.ind
+dst_web*.html
+dst_web.css
+*-.png
+*.bbl
+*.blg

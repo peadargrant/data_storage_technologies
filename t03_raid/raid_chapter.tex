@@ -11,93 +11,95 @@ reliability.
 
 \begin{description}
 \item[RAID levels]
-are standard patterns in which RAID is implemented, .
+  are standard patterns in which RAID is implemented, .
 \item[RAID set]
-is a number of physical disks that has been combined using a RAID level.
-A RAID set can be:
-
-\begin{description}
-\item[Healthy:]
-where all of its member disks are working.
-\item[Degraded:]
-where one or more of its member disks have failed while the others
-continue to work. I/O operations can continue.
-\item[Failed:]
-where one or more of its member disks have failed such that I/O
-operations cannot continue.
+  is a number of physical disks that has been combined using a RAID level.
+  A RAID set can be:
+  
+  \begin{description}
+  \item[Healthy:]
+    where all of its member disks are working.
+  \item[Degraded:]
+    where one or more of its member disks have failed while the others
+    continue to work. I/O operations can continue.
+  \item[Failed:]
+    where one or more of its member disks have failed such that I/O
+    operations cannot continue.
+  \end{description}
 \end{description}
-\end{description}
 
-\section{Metrics}\label{metrics}
+\section{RAID Metrics}
+\label{sec:raid-metrics}
 
-\subsection{Fault tolerence}\label{fault-tolerence}
+\subsection{Fault tolerence}
+\label{sec:fault-tolerence}
 
 Each RAID level can tolerate a number of disks failing.
 
-\subsection{Storage efficiency}\label{storage-efficiency}
+\subsection{Storage efficiency}
+\label{sec:storage-efficiency}
 
-The storage efficiency of a RAID set is:
+The storage efficiency, $E$, of a RAID set is:
 
-\begin{verbatim}
-E = ( useable capacity ) / ( sum of RAID set disks capacity )
-\end{verbatim}
+\begin{align}
+  E & = \frac{\mbox{useable capacity}}{\mbox{sum of RAID set disks capacity}} \label{eq:raid-storage-efficiency}
+\end{align}
 
-For any given RAID set, it depends on the RAID level, \texttt{L}, in use
-and the number of disks, \texttt{n}.
+For any given RAID set, it depends on the RAID level, $L$, in use
+and the number of disks, $n$.
 
-\subsection{Write penalty}\label{write-penalty}
+\subsection{Write penalty}
+\label{sec:write-penalty}
 
 Most RAID levels have a write penalty, which is the number of write
 operations that occur compared to when a single disk is used. A single
 disk would have a write penalty of 1.
 
-\section{Basic RAID levels}\label{basic-raid-levels}
+\section{Basic RAID levels}
+\label{sec:basic-raid-levels}
 
 The two basic RAID levels involve striping and mirroring. Assume that
 some data has been split up into equally sized chunks labelled
 \texttt{A1,\ A2\$} etc. Let \texttt{n} be the number of disks in the
 set.
 
-\subsection{RAID-0 (Stripe)}\label{raid-0-stripe}
+\subsection{RAID-0 (Stripe)}
+\label{sec:raid-0-stripe}
 
-RAID-0 splits, or stripes, data across a minimum of \(2\) disks, .
+RAID-0 splits, or stripes, data across a minimum of $2$ disks, \autoref{fig:raid-0}.
 
-\begin{figure}
-\centering
-%\includegraphics{RAID_0.svg}
-\caption{RAID-0 with 2 disks}
-\end{figure}
+\autoimage{RAID_0}{RAID-0 with 2 disks}{raid-0}
 
-\subsubsection{RAID-0 fault tolerence}\label{raid-0-fault-tolerence}
+
+\subsubsection{RAID-0 fault tolerence}
+\label{sec:raid-0-fault-tolerence}
 
 RAID-0 has no fault tolerence. If any one disk fails no I/O can be
 performed. If the failure is permanent, data is permanently lost.
 
 Using standard redundancy notation, RAID-0 has redundancy \texttt{N}.
 
-\subsubsection{RAID-0 storage
-efficiency}\label{raid-0-storage-efficiency}
+\subsubsection{RAID-0 storage efficiency}
+\label{sec:raid-0-storage-efficiency}
 
 In RAID-0, data is striped across all disks in the set. The space of all
 the \texttt{n} disks in the set is usable.
 
-\begin{verbatim}
-RAID-0 efficiency = n / n = 1
-\end{verbatim}
+\begin{align}
+  \mbox{RAID-0 efficiency} & = \frac{n}{n} = 1 \label{eq:raid-0-storage-efficiency}
+\end{align}
 
-\subsubsection{RAID-0 write penalty}\label{raid-0-write-penalty}
+\subsubsection{RAID-0 write penalty}
+\label{sec:raid-0-write-penalty}
 
 RAID-0 does not incur additional writes, so its write penalty is 1.
 
-\subsection{RAID-1 (Mirror)}\label{raid-1-mirror}
+\subsection{RAID-1 (Mirror)}
+\label{sec:raid-1}
 
 RAID-1 mirrors, or copies, data across \texttt{n} disks:
 
-\begin{figure}
-\centering
-%\includegraphics{RAID_1.svg}
-\caption{RAID-1}
-\end{figure}
+\autoimage{RAID_1}{RAID-1}{raid-1}
 
 \begin{itemize}
 \item
@@ -109,7 +111,8 @@ RAID-1 mirrors, or copies, data across \texttt{n} disks:
   Write performance is identical to a single disk in theory.
 \end{itemize}
 
-\subsubsection{RAID-1 fault tolerence}\label{raid-1-fault-tolerence}
+\subsubsection{RAID-1 fault tolerence}
+\label{sec:raid-1-fault-tolerence}
 
 RAID-1 maintains full data integrity with only a single disk remaining
 functional:
@@ -122,69 +125,69 @@ functional:
 
 In redundancy terms, RAID-1 is \texttt{N+(n-1)} redundant.
 
-\subsubsection{RAID-1 storage
-efficiency}\label{raid-1-storage-efficiency}
+\subsubsection{RAID-1 storage efficiency}
+\label{sec:raid-1-storage-efficiency}
 
 In RAID-1, data is mirrored onto all disks in the set. So only 1 disk's
 worth of capacity in the set of \texttt{n} is useable, giving:
 
-\begin{verbatim}
-Efficiency(L=1, n) = 1 / n 
-\end{verbatim}
+\begin{align}
+  \mbox{Efficiency(L=1, n)} & = \frac{1}{n} \label{eq:raid-1-storage-efficiency} 
+\end{align}
 
-\subsubsection{RAID-1 write penalty}\label{raid-1-write-penalty}
+\subsubsection{RAID-1 write penalty}
+\label{sec:raid-1-write-penalty}
 
 RAID-1 incurs a write for each disk in the set, so its write penalty is
 \texttt{n}. Most RAID-1 sets have two disks, so this is often 2.
 
-\section{Parity-based RAID}\label{parity-based-raid}
+\section{Parity-based RAID}
+\label{sec:parity-based-raid}
 
 Parity relies on the XOR operation:
 
-\begin{tabular}{@{}ccc@{}}
-\toprule
-A & B & C = A XOR B \$\tabularnewline
-\midrule
-0 & 0 & 0\tabularnewline
-0 & 1 & 1\tabularnewline
-1 & 0 & 1\tabularnewline
-1 & 1 & 0\tabularnewline
-\bottomrule
-\end{tabular}
+\begin{table}[htbp]
+  \begin{tabular}{c c c}
+    \toprule
+    A & B & C = A XOR B \\
+    \midrule
+    0 & 0 & 0 \\
+    0 & 1 & 1 \\
+    1 & 0 & 1 \\
+    1 & 1 & 0 \\
+    \bottomrule
+  \end{tabular}
+  \caption{XOR operation}
+  \label{tab:xor-operation}
+\end{table}
 
 The parity blocks are computed bitwise from the data blocks using XOR.
 
-\subsection{RAID-4}\label{raid-4}
+\subsection{RAID-4}
+\label{sec:raid-4}
 
 RAID-4 stripes data blocks across \texttt{n-1} disks where the remaining
 1 disk is used for parity. A minimum of 3 disks is required for RAID-4.
 
-\begin{figure}
-\centering
-%\includegraphics{RAID_4.svg}
-\caption{RAID-4}
-\end{figure}
+\autoimage{RAID_4}{RAID-4}{raid-4}
 
-Bit-by-bit the parity computation for a single stripe, in this case
-\texttt{A} is:
+Bit-by-bit the parity computation for a single stripe, in this case \texttt{A} is:
 \begin{align}
-  A\_p & = A\_1 \oplus A\_2 \oplus A\_3 
+  A\_p & = A\_1 \oplus A\_2 \oplus A\_3 \label{eq:single-stripe-parity}
 \end{align}
 The same parity computation is used for stripes $B, C, D$.
 
-\subsection{RAID-5}\label{raid-5}
+\subsection{RAID-5}
+\label{sec:raid-5}
 
 RAID-5 is conceptually similar to RAID-4. Parity is computed for each
 stripe in the same way, but is stored differently. Instead of a single
 parity disk, the parity blocks are distributed amongst all disks.
 
-\begin{figure}
-\centering
-%\includegraphics{RAID_5.svg}
-\caption{RAID-5}
-\end{figure}
+\autoimage{RAID_5}{RAID-5}{raid-5}
 
-\subsubsection{RAID-5 fault tolerence}\label{raid-5-fault-tolerence}
+\subsubsection{RAID-5 fault tolerence}
+\label{sec:raid-5-fault-tolerence}
 
 \begin{itemize}
 \item
@@ -201,8 +204,8 @@ parity disk, the parity blocks are distributed amongst all disks.
 
 In redundancy terms, RAID-5 is \texttt{N+1} redundant.
 
-\subsubsection{RAID-5 storage
-efficiency}\label{raid-5-storage-efficiency}
+\subsubsection{RAID-5 storage efficiency}
+\label{sec:raid-5-storage-efficiency}
 
 For RAID-5, the parity data takes up the capacity of one disk (although
 distributed across them all). THe parity data does not contribute to the
@@ -210,22 +213,20 @@ storage available for use. This means that of the \texttt{n} disks in
 the set, only the capacity equivalent to \texttt{n-1} disks is available
 for use:
 
-\begin{verbatim}
-Efficiency(L=5, n)  =  ( n - 1 ) / n  =  1 - 1 / n 
-\end{verbatim}
+\begin{align}
+  \mbox{Efficiency(L=5, n)} & =  \frac{( n - 1 )}{n}  =  1 - \frac{1}{n} \label{eq:raid-5-storage-efficiency}
+\end{align}
 
-\subsection{RAID-6}\label{raid-6}
+\subsection{RAID-6}
+\label{sec:raid-6}
 
 RAID-6 is similar to RAID-5 but adds a second parity block in each
 stripe.
 
-\begin{figure}
-\centering
-%\includegraphics{RAID_6.svg}
-\caption{RAID-6}
-\end{figure}
+\autoimage{RAID_6}{RAID-6}{raid-6}
 
-\subsubsection{RAID-6 fault tolerence}\label{raid-6-fault-tolerence}
+\subsubsection{RAID-6 fault tolerence}
+\label{sec:raid-6-fault-tolerence}
 
 The second parity block in each stripe means that RAID-6 can sustain the
 loss of up to two disks in a set while still remaining operational:
@@ -239,35 +240,31 @@ loss of up to two disks in a set while still remaining operational:
 
 In redundancy terms, RAID-6 is \texttt{N+2} redundant.
 
-\subsubsection{RAID-6 storage
-efficiency}\label{raid-6-storage-efficiency}
+\subsubsection{RAID-6 storage efficiency}
+\label{sec:raid-6-storage-efficiency}
 
 In RAID-6 we lose the equivalent of two disks' space to store the parity
 information.
 
-\begin{verbatim}
-Efficiency(L=6, n)  =  ( n - 2 ) / n  =  1 - 2 / n 
-\end{verbatim}
+\begin{align}
+  \mbox{Efficiency(L=6, n)}  & =  \frac{n - 2}{n}  =  1 - \frac{2}{n} \label{eq:raid-6-storage-efficiency} 
+\end{align}
 
-\section{Nested RAID}\label{nested-raid}
+\section{Nested RAID}
+\label{sec:nested-raid}
 
-\subsection{RAID-01}\label{raid-01}
+\subsection{RAID-01}
+\label{sec:raid-01}
 
-\begin{figure}
-\centering
-%\includegraphics{RAID_nested_01.svg}
-\caption{RAID-01}
-\end{figure}
+\autoimage{RAID_nested_01}{RAID-01}{raid-01}
 
-\subsection{RAID-10}\label{raid-10}
+\subsection{RAID-10}
+\label{sec:raid-10}
 
-\begin{figure}
-\centering
-%\includegraphics{RAID_nested_10.svg}
-\caption{RAID-10}
-\end{figure}
+\autoimage{RAID_nested_10}{RAID-10}{raid-10}
 
-\section{Implementation}\label{implementation}
+\section{Implementation}
+\label{sec:implementation}
 
 RAID can be implemented in either software or hardware:
 
@@ -297,7 +294,8 @@ is preferable. The choice depends on a large number of factors: devices,
 HBA capabilities, HBA throughput, OS, filesystem(s) to be used,
 portability requirements.
 
-\section{Monitoring}\label{monitoring}
+\section{Monitoring}
+\label{sec:monitoring}
 
 \textbf{Problem:} RAID set becomes degraded due to disk failure.
 Essential that the failed disk is replaced before a further failure
@@ -319,13 +317,13 @@ installed.
   helpdesk API).
 \end{itemize}
 
-\section{Hot spares}\label{hot-spares}
+\section{Hot spares}
+\label{sec:hot-spares}
 
 If hardware / software capabilities and available drive bays allow, it
 is possible to automatically replace a failed disk with a hot spare.
 
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
 \item
   The RAID controller / software detects the failed disk, sends
   notification.

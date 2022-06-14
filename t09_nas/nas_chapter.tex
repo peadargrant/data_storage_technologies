@@ -8,26 +8,28 @@ contrasts to SAN where block level storage is provided. It is assumed in
 a NAS environment that any number of clients can simultaneously connect
 to the share.
 
-\subsection{Protocols}\label{protocols}
+\subsection{NAS protocols}
+\label{sec:nas-protocols}
 
 summarises the NAS protocols commonly encountered.
 
-{1.0}{[}htbp{]}{l l l X} \textbf{Protocol} \& ~ \& \textbf{Port} \&
-\textbf{Remarks}\\
-Server Message Block \& SMB \& 135,137-139,445 \& Windows-centric but
-cross-platform. Samba and CIFSd for Linux.\\
-Common Internet File System \& CIFS \& ~ \& Attempted re-name of SMB by
-Microsoft\\
-Network File System \& NFS \& ~ \& UNIX centric but cross-platform.
-Multiple versions, currently NFSv4. NFS client on Windows.\\
-Apple Filing Protocol \& AFP \& 548 \& Developed from earlier AppleShare
-protocol. Not often encountered.\\
-Netware Core Protocol \& NCP \& 524 \& Like SMB has support for print
-and other sharing as well.\\
+\begin{table}[htbp]
+  \begin{tabularx}{1.0\linewidth}{l l l X}
+    \toprule
+    \textbf{Protocol} & ~ & \textbf{Port} & \textbf{Remarks} \\
+    \midrule
+    Server Message Block & SMB & 135,137-139,445 & Windows-centric but cross-platform. Samba and CIFSd for Linux.\\
+    Common Internet File System & CIFS & ~ & Attempted re-name of SMB by Microsoft\\
+    Network File System & NFS & ~ & UNIX centric but cross-platform. Multiple versions, currently NFSv4. NFS client on Windows.\\
+    Apple Filing Protocol & AFP & 548 & Developed from earlier AppleShare protocol. Not often encountered.\\
+    Netware Core Protocol & NCP & 524 & Like SMB has support for print and other sharing as well.\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
 Points to note:
 
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
 \item
   Some protocols like SMB/CIFS and NCP were designed for more than file
   sharing. Print sharing, domain and interprocess communication were
@@ -45,7 +47,8 @@ Points to note:
   links.
 \end{enumerate}
 
-\subsection{Access pattern}\label{access-pattern}
+\subsection{Access pattern}
+\label{sec:access-pattern}
 
 Network attached storage is normally utilised via a virtual filesystem.
 This allows the network filesystem to be mounted (Unix) / mapped as a
@@ -64,7 +67,6 @@ drive letter (Windows): Points to note:
   Permissions are a complex compound of:
 
   \begin{enumerate}
-  \def\labelenumi{\arabic{enumi}.}
   \item
     Server filesystem permissions
   \item
@@ -82,15 +84,16 @@ As an alternative there are tools that can connect directly to the
 shares like an FTP client, such as \texttt{smbclient} for Linux. Mobile
 apps tend to work similarly.
 
-\section{Provisioning}\label{provisioning}
+\section{Provisioning}
+\label{sec:provisioning}
 
-\subsection{General-purpose server}\label{general-purpose-server}
+\subsection{General-purpose server}
+\label{sec:general-purpose-server}
 
 General-purpose servers running standard operating systems have server
 software installed for most common protocols. General arrangement:
 
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
 \item
   One or more shares configured. Each share points to a directory on the
   server's filesystem.
@@ -101,7 +104,6 @@ software installed for most common protocols. General arrangement:
   configuration file for the server program. Common examples:
 
   \begin{enumerate}
-  \def\labelenumii{\arabic{enumii}.}
   \item
     \texttt{/etc/exports} file defines NFS exports (shares)
   \item
@@ -118,7 +120,8 @@ software installed for most common protocols. General arrangement:
   SAN.
 \end{enumerate}
 
-\subsection{Storage appliance}\label{storage-appliance}
+\subsection{Storage appliance}
+\label{sec:storage-appliance}
 
 A number of vendors supply NAS devices that can, as a minimum provide
 SMB and/or NFS services. Often support many other services. Key vendors:
@@ -141,7 +144,8 @@ Synology, QNAP. Points to note:
   and light-commercial settings.
 \end{itemize}
 
-\subsection{NAS gateway}\label{nas-gateway}
+\subsection{NAS gateway}
+\label{sec:nas-gateway}
 
 A NAS gateway / NAS head / protocol converter delivers NAS shares from
 SAN volumes. High-performance embedded dedicated storage appliance that

@@ -1,6 +1,8 @@
 \chapter{Filesystems}
+\label{ch:filesystems}
 
-\section{Disk-based filesystems}\label{disk-based-filesystems}
+\section{Disk-based filesystems}
+\label{sec:disk-based-filesystems}
 
 Disk-based file systems interposes between the application layer
 (including the user-space OS tools like File Manager) and the block
@@ -8,7 +10,8 @@ devices. A file system is created on a block device (= a block device is
 formatted with a file system) that is then mounted by the host's
 operating system.
 
-\subsection{Common filesystems}\label{common-filesystems}
+\subsection{Common filesystems}
+\label{sec:common-filesystems}
 
 As of the present time the most common disk-based filesystems are:
 
@@ -23,47 +26,47 @@ systems commonly use ext4, but a large range of other systems commonly
 appear: ext3, xfs, reiserfs, ZFS*
 \item[UNIX-based systems]
 tend to have an OS-specific filesystem w/ similar behaviour to linux,
-often ZFS*
+often ZFS
 \end{description}
 
 Wikipedia has collated a
 \href{https://en.wikipedia.org/wiki/Comparison_of_file_systems}{comparison
 of file systems}.
 
-\subsection{Roles}\label{roles}
+\subsection{Roles of filesystems}\label{sec:roles-of-filesystems}
 
 \begin{description}
 \item[Space management]
-using allocation table. Dealing with \emph{fragmentation}.
+  using allocation table. Dealing with \emph{fragmentation}.
 \item[Naming]
-possibly case ( sensitive \textbar{} insensitive \textbar{} preserving )
+  possibly case ( sensitive \textbar{} insensitive \textbar{} preserving )
 \item[Hierarchy]
-using directories.
-
-\begin{itemize}
-
-\item
-  Historically and some specialist systems: \textbf{flat} filesystem
-\end{itemize}
+  using directories.
+  \begin{itemize}
+    
+  \item
+    Historically and some specialist systems: \textbf{flat} filesystem
+  \end{itemize}
 \item[Metadata]
-such as file creation / modification time
+  such as file creation / modification time
 \item[Permissions management]
-via metadata to allow ( read \textbar{} write \textbar{} execute ) to
-specific users.
-
-\begin{itemize}
-\item
-  Common permissions are owner / group / world (others) in UNIX.
-\item
-  The host OS, not the filesystem, actually enforces these restrictions.
-\end{itemize}
+  via metadata to allow ( read \textbar{} write \textbar{} execute ) to
+  specific users.
+  
+  \begin{itemize}
+  \item
+    Common permissions are owner / group / world (others) in UNIX.
+  \item
+    The host OS, not the filesystem, actually enforces these restrictions.
+  \end{itemize}
 \item[Maintaining integrity]
-using redundancy, checksums.
+  using redundancy, checksums.
 \item[Durable storage]
-by journalling
+  by journalling
 \end{description}
 
-\section{Journalling}\label{journalling}
+\section{Journalling}
+\label{sec:journalling}
 
 Durability is the key expectation that data once written to filesystem
 isn't lost (within reasonable assumptions). Journalling is where the
@@ -71,7 +74,6 @@ intent to change data is recorded to the journal before the actual data
 itself is modified, .
 
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
 \item
   Data is written to the on-disk journal
 \item
@@ -80,8 +82,8 @@ itself is modified, .
   The journal is deleted
 \end{enumerate}
 
-\subsection{Alternatives to
-Journalling}\label{alternatives-to-journalling}
+\subsection{Alternatives to Journalling}
+\label{sec:alternatives-to-journalling}
 
 \begin{description}
 \item[Copy-on-write:]
@@ -91,12 +93,13 @@ the journal itself is the filesystem
 \item[Soft updates]
 \end{description}
 
-\section{File system operations}\label{file-system-operations}
+\section{File system operations}
+\label{sec:file-system-operations}
 
-Managing filesystems is the responsibility of the host OS and its
-administrator(s). The precise commands depend on the OS.
+Managing filesystems is the responsibility of the host OS and its administrator(s). The precise commands depend on the OS.
 
-\subsection{Single/multi-root}\label{singlemulti-root}
+\subsection{Single vs multi-root}
+\label{sec:single-vs-multi-root}
 
 Although more an OS-characteristic, there is an important difference
 between single and multi-root operating systems that becomes relevant
@@ -104,7 +107,7 @@ for discussion of filesystems:
 
 \begin{description}
 \item[Single root]
-operating systems boot with one filesystem mounted as the root
+  operating systems boot with one filesystem mounted as the root
 \texttt{/} directory. All others are attached at mountpoints within the
 root directory.
 \item[Multi-root]
@@ -114,35 +117,19 @@ e.g. \texttt{C:,\ D:}.
 
 In general, most UNIX-like OS are single root. Windows is multi-root.
 
-\subsection{Linux}\label{linux}
+\subsection{Linux}
+\label{sec:linux}
 
 Linux and UNIX tend to use similar commands to those shown here. Always
 check the precise requirement for your OS.
 
-\subsubsection{Creation}\label{creation}
+\subsubsection{Creation}
+\label{sec:creation}
 
 File system creation, also called Formatting, is done through the
 \texttt{mkfs} command:
 
-\begin{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# review help text and manpage}
-\ExtensionTok{mkfs} \NormalTok{-h }
-\FunctionTok{man} \NormalTok{mkfs}
-
-\CommentTok{# check where mkfs is located (usually /sbin)}
-\FunctionTok{which} \NormalTok{mkfs}
-
-\CommentTok{# from that, find the available filesystems}
-\FunctionTok{ls} \NormalTok{-l /sbin }\KeywordTok{|} \FunctionTok{grep} \NormalTok{mkfs}
-
-\CommentTok{# creating a filesystem (aka formatting)}
-\CommentTok{# e.g. make an ext4 on /dev/sdb1}
-\ExtensionTok{mkfs} \NormalTok{-t ext4 /dev/sdb1}
-\end{Highlighting}
-\end{Shaded}
-\end{verbatim}
+\inputminted{bash}{fs_creation.sh}
 
 \subsubsection{Mounting}\label{mounting}
 
@@ -155,24 +142,7 @@ that folder with root of the mounted drive.
 Consider the example of mounting a block device \texttt{/dev/sdb1} at
 the mountpoint \texttt{/mnt/data}:
 
-\begin{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{# review mount command}
-\FunctionTok{mount} \NormalTok{-h  }\CommentTok{#inbuilt help}
-\FunctionTok{man} \NormalTok{mount  }\CommentTok{#man page}
-
-\CommentTok{# create the mountpoint (-p allows it to already exist)}
-\FunctionTok{mkdir} \NormalTok{-p /mnt/data }
-
-\CommentTok{# issue the mount}
-\FunctionTok{mount} \NormalTok{-t ext4 /dev/sdb1 /mnt/data}
-
-\CommentTok{# viewing mounted systems}
-\FunctionTok{mount}
-\end{Highlighting}
-\end{Shaded}
-\end{verbatim}
+\inputminted{bash}{fs_mounting.sh}
 
 \subsubsection{Mounting on boot}\label{mounting-on-boot}
 
@@ -267,7 +237,8 @@ Generally a drive letter will be assigned.
 Windows can also do a UNIX-style mount to a folder within another
 filesystem. Not commonly used though.
 
-\section{Virtual filesystems}\label{virtual-filesystems}
+\section{Virtual filesystems}
+\label{sec:virtual-filesystems}
 
 A filesystem as such is implemented within the operating system normally
 in the form of code. This may in fact allow filesystems to be created

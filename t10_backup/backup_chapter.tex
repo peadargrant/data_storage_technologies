@@ -1,11 +1,11 @@
 \chapter{Backup}
 \label{ch:backup}
 
-\section{Backup}\label{backup}
+\section{Backup}
+\label{sec:backup}
 
-You will find most of the ideas in {[}@ism-book{]}.
-
-\subsection{Terminology}\label{terminology}
+\subsection{Backup terminology}
+\label{sec:backup-terminology}
 
 \begin{description}
 \item[Production data]
@@ -18,7 +18,8 @@ store of data that is no longer actively used that is retained on
 low-cost secondary storage.
 \end{description}
 
-\subsection{Purpose}\label{purpose}
+\subsection{Backup purpose}
+\label{sec:backup-purpose}
 
 \begin{description}
 \item[Disaster recovery]
@@ -30,7 +31,8 @@ error (e.g.~important email deleted).
 for regulatory compliance, historical record, later analysis etc.
 \end{description}
 
-\subsection{Parameters}\label{parameters}
+\subsection{Backup parameters}
+\label{sec:backup-parameters}
 
 \begin{description}
 \item[Recovery Point Objective (RPO)]
@@ -41,7 +43,8 @@ is the time taken to restore the system to the RPO point after an
 incident occurs.
 \end{description}
 
-\subsection{Methods}\label{methods}
+\subsection{Backup methods}
+\label{sec:backup-methods}
 
 \begin{description}
 \item[Hot / online:]
@@ -57,7 +60,8 @@ production system is running during backup:
 production system is shut-down for normal operations.
 \end{description}
 
-\subsection{Scope}\label{scope}
+\subsection{Backup scope}
+\label{sec:backup-scope}
 
 Scope refers to what is actually backed up:
 
@@ -72,13 +76,15 @@ Scope refers to what is actually backed up:
   Is a \emph{Bare Metal Recovery} required?
 \end{itemize}
 
-\section{Backup granularity}\label{backup-granularity}
+\section{Backup granularity}
+\label{sec:backup-granularity}
 
 There are three common granularities of backup, .
 \href{https://www.acronis.com/en-us/articles/incremental-differential-backups/}{See
 Acronis article} on different granularities for further info.
 
-\subsection{Full backup}\label{full-backup}
+\subsection{Full backup}
+\label{sec:full-backup}
 
 Full backup contains the entire dataset:
 
@@ -90,28 +96,32 @@ Full backup contains the entire dataset:
   storage space.
 \end{itemize}
 
-\subsection{Incremenetal backup}\label{incremenetal-backup}
+\subsection{Incremenetal backup}
+\label{sec:incremental-backup}
 
 Incremental backups store only the files changed since the most recent
 full or incremental backup was taken. Restoration steps are shown in .
 
-\subsection{Cumulative / Differential
-backup}\label{cumulative-differential-backup}
+\subsection{Cumulative / Differential backup}
+\label{sec:cumulative-differential-backup}
 
 Differential backup includes files changed since the last \textbf{full}
 backup. Restoration steps are shown in
 
-\section{Targets}\label{targets}
+\section{Backup targets}
+\label{sec:backup-targets}
 
 Backup data is written to targets. Like any other storage media, targets
 may be directly attached to a host or may be LAN or SAN attached.
 
-\subsection{Disk}\label{disk}
+\subsection{Disk-based backup}
+\label{sec:disk-based-backup}
 
 Disk-based backup has low cost, fast backup and recovery. Should be
 using monitored RAID to ensure backup availability.
 
-\subsection{Tape}\label{tape}
+\subsection{Tape-based backup}
+\label{sec:tape-based-backup}
 
 Backup traditionally has used tape media.
 
@@ -119,16 +129,19 @@ Tape drives are best operated such that they do not have to start/stop
 repeatedly during operation. Interleaving can be used so that multiple
 streams of data can be written to a tape at speed, .
 
-\subsection{Tape libraries}\label{tape-libraries}
+\subsection{Tape libraries}
+\label{sec:tape-libraries}
 
 Tape backup can be provisioned on a tape library in medium-large
 installations, .
 
-\subsection{Virtual tape library}\label{virtual-tape-library}
+\subsection{Virtual tape library}
+\label{sec:virtual-tape-library}
 
 Virtual tape library emulates a tape library but is actually provisioned
 usually from SAN LUNs, .
 
-\subsection{Targets comparison}\label{targets-comparison}
+\subsection{Targets comparison}
+\label{sec:targets-comparison}
 
 Comparison of different targets is given in .

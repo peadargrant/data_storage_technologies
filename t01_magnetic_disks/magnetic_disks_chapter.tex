@@ -4,9 +4,7 @@
 \section{Components}
 \label{sec:components}
 
-%\includegraphics{hard_drive_components_3d.svg}
-
-Hard drive components
+\autoimage{hard_drive_components_3d}{Hard drive components}{hard-drive-components}
 
 \begin{itemize}
 \item
@@ -36,13 +34,13 @@ Hard drive components
   \end{itemize}
 \end{itemize}
 
-\section{Geometry}\label{geometry}
+\section{Geometry}
+\label{sec:geometry}
 
-%\includegraphics{disk_geometry.svg}
-
-Disk geometry
+\autoimage{disk_geometry}{Disk Geometry}{disk-geometry}
 
 \begin{description}
+
 \item[Tracks:]
 concentric rings on each platter. Because of multiple platters, each
 with two sides, normally refer to cylinder and head to uniquely identify
@@ -56,11 +54,13 @@ from zero at outer edge.
 head identifies which platter and side that the track identified by the
 cylinder is located within.
 \end{description}
+
 \item[Sector / block:]
 subdivisions of tracks, each numbered from 1.
 \end{description}
 
-\section{Logical block addressing}\label{logical-block-addressing}
+\section{Logical block addressing}
+\label{sec:logical-block-addressing}
 
 In order to be able to locate our data, we need a way to address
 sectors:
@@ -80,13 +80,14 @@ Address in CHS and LBA format are internally binary numbers and often
 appear on real systems in hex form. However, they can be understood and
 manipulated as integers for familiarisation purposes.
 
-\subsection{Converting CHS to LBA}\label{converting-chs-to-lba}
+\subsection{Converting CHS to LBA}
+\label{sec:converting-chs-to-lba}
 
 The logical block address (LBA) for a given $C, H, S$ tuple corresponding to the cylinder, head and sector is given by the formula:
 
-\begin{verbatim}
-LBA = ( C * HPC + H ) * SPT + ( S - 1 )
-\end{verbatim}
+\begin{align}
+  \mbox{LBA} & = ( C \times \mbox{HPC} + H ) \times \mbox{SPT} + ( S - 1 ) \label{eq:chs-to-lba}
+\end{align}
 
 where
 
@@ -99,13 +100,13 @@ where
 
 \subsection{Converting LBA to CHS}\label{converting-lba-to-chs}
 
-The LBA to CHS operation requires three different formulas:
+The LBA to CHS operation requires \textit{three} separate formulas:
 
-\begin{verbatim}
-C = LBA / ( HPC * SPT )
-H = ( LBA / SPT ) % HPC
-S = ( LBA % SPT ) + 1
-\end{verbatim}
+\begin{align}
+  C & = \mbox{LBA} / ( \mbox{HPC} * \mbox{SPT} ) \label{eq:lba-to-c} \\
+  H & = ( \mbox{LBA} / \mbox{SPT} ) \% \mbox{HPC}  \label{eq:lba-to-h} \\
+  S & = ( \mbox{LBA} \% \mbox{SPT} ) + 1 \label{eq:lba-to-s}
+\end{align}
 
 Noting that:
 
@@ -117,20 +118,19 @@ Noting that:
   The \texttt{\%} symbol means modulo, i.e. the remainder.
 \end{itemize}
 
-As a sanity check, remember also that H must be less than the number of
-heads per cylinder and that S must be less than or equal to the number
+As a sanity check, remember also that $H$ must be less than the number of
+heads per cylinder and that $S$ must be less than or equal to the number
 of sectors per track:
 
-\begin{verbatim}
-H < HPC 
-S <= SPT
-\end{verbatim}
+\begin{align}
+  H & < HPC \label{eq:h-lt-hpc} \\
+  S & \le SPT \label{eq:s-le-spt}
+\end{align}
 
-\section{Zoned bit recording}\label{zoned-bit-recording}
+\section{Zoned bit recording}
+\label{sec:zoned-bit-recording}
 
-%\includegraphics{zoned_bit_recording.png}
-
-Zoned bit recording
+\autoimage{zoned_bit_recording.png}{Zoned bit recording}{zoned-bit-recording}
 
 Zoned bit recording increases the storage capacity of the disks by
 accounting for the varying density of sectors from the spindle to the
@@ -146,10 +146,11 @@ edge:
   Suitable number of sectors per cylinder assigned within each zone.
 \end{itemize}
 
-\section{Capacity}\label{capacity}
+\section{Capacity}
+\label{sec:magnetic-disk-capacity}
 
-Disk capacity is normally expressed in bytes, or suitable multiples like
-or . A confusing situation exists regarding actual vs advertised
+Disk capacity is normally expressed in bytes, or suitable multiples like \si{\giga\byte}
+or \si{\tera\byte}. A confusing situation exists regarding actual vs advertised
 capacity.
 
 \begin{itemize}
@@ -162,13 +163,12 @@ capacity.
   same disk capacity.
 \end{itemize}
 
-\subsection{Converting from advertised to actual
-capacity}\label{converting-from-advertised-to-actual-capacity}
+\subsection{Converting from advertised to actual capacity}
+\label{sec:converting-from-advertised-to-actual-capacity}
 
 To convert from advertised capacity to actual capacity:
 
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
 \item
   Re-write the advertised capacity in bytes by multiplying successively
   by 1000 to remove the decimal prefix, leaving the answer in bytes.
@@ -177,14 +177,11 @@ To convert from advertised capacity to actual capacity:
   binary prefixes
 \end{enumerate}
 
-We could try to write this as a formula:
-
-\begin{verbatim}
-actual = ( advertised * 1000^x ) / 1024^x
-\end{verbatim}
-
-where \texttt{x} depends on the units in question:
-
+We can write this as a formula:
+\begin{align}
+  \mbox{actual} & = \frac{ \mbox{advertised} * 1000^x }{ 1024^x } \label{eq:advertised-to-actual-capacity}
+\end{align}
+where $x$ depends on the units in question:
 \begin{verbatim}
 kB =>  x = 1
 MB =>  x = 2
@@ -193,13 +190,11 @@ TB =>  x = 4
 PB =>  x = 5
 \end{verbatim}
 
-\subsection{Converting from actual to advertised
-capacity}\label{converting-from-actual-to-advertised-capacity}
+\subsection{Converting from actual to advertised capacity}
+\label{sec:converting-from-actual-to-advertised-capacity}
 
 To convert from actual capacity to advertised capacity:
-
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
 \item
   Re-write the actual capacity in bytes by multiplying successively by
   1024 to remove the binary prefix, leaving the answer in bytes.
@@ -209,9 +204,7 @@ To convert from actual capacity to advertised capacity:
 \end{enumerate}
 
 This process can also be written as a formula:
-
-\begin{verbatim}
-advertised = actual * 1024^x / 1000^x
-\end{verbatim}
-
-where {\emph{x}} depends on the units in question as above.
+\begin{align}
+  \mbox{advertised} & = \frac{\mbox{actual} * 1024^x}{1000^x} 
+\end{align}
+where $x$ depends on the units in question as above.

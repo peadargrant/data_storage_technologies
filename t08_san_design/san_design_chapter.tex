@@ -2,7 +2,7 @@
 \label{ch:san-design}
 
 \section{Purpose}
-\label{purpose}
+\label{sec:purpose}
 
 There are a few primary patterns of storage provided by SAN:
 
@@ -30,7 +30,8 @@ Some additional host-specific questions:
   Are the hosts
 \end{itemize}
 
-\section{SAN type}\label{san-type}
+\section{SAN type}
+\label{sec:san-type}
 
 A major decision is whether to deploy FC or IP SAN.
 
@@ -53,14 +54,15 @@ Other notes:
   different teams responsible for storage vs general-purpose networking.
 \end{itemize}
 
-\section{High Availability}\label{high-availability}
+\section{High Availability}
+\label{sec:high-availability}
 
 SANs hold high-value information critical to continuity of service. A
 naively designed SAN may exhibit worse availability characteristics than
 simple direct-attached storage on individual hosts.
 
-\subsection{Storage layer
-availability}\label{storage-layer-availability}
+\subsection{Storage layer availability}
+\label{sec:storage-layer-availability}
 
 Storage appliances normally include a number of features to ensure high
 availability, .
@@ -95,7 +97,8 @@ avoid storage appliance remaining in a degraded state (e.g.~failed PSU)
 as redundancy will hide this situation.
 \end{description}
 
-\subsection{Fabric layer availability}\label{fabric-layer-availability}
+\subsection{Fabric layer availability}
+\label{sec:fabric-layer-availability}
 
 The fabric (regardless of type) can represent a significant single point
 of failure. Consider the simple SAN layout in .
@@ -106,7 +109,8 @@ fabric averts this, .
 SAN fabric components (e.g.~switches) should be dual-powered where
 possible. This may be via dual-PSU or via external transfer switches.
 
-\subsection{Host layer availability}\label{host-layer-availability}
+\subsection{Host layer availability}
+\label{sec:host-layer-availability}
 
 Assuming that there is redundancy in the fabric, the host layer requires
 approriate redundancy to connect to the fabric.
@@ -114,7 +118,8 @@ approriate redundancy to connect to the fabric.
 To transparently utilise the redundant fabric we must ensure that
 multipathing is correctly configured.
 
-\subsection{Data centre environment}\label{data-centre-environment}
+\subsection{Data centre environment}
+\label{sec:data-centre-environment}
 
 A SAN will normally be provisioned within a data centre environment. We
 should assume at a minimum:
@@ -134,3 +139,4 @@ appropriate to the data and service risk profile.
 
 The provision of a SAN should dictate that the infrastructural services
 are sufficient.
+

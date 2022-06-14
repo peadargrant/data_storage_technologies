@@ -30,7 +30,8 @@ filesystem organises the block device into the familiar structure of
 files and folders. Also the filesystem typically handles permissions and
 metadata storage.
 
-\section{Partitioning}\label{partitioning}
+\section{Partitioning}
+\label{sec:partitioning}
 
 Partitioning allows us to divide a single block device into a number of
 separate segments that each appear as a separate block device. Each
@@ -58,16 +59,13 @@ There are a number of partitioning schemes. A few common concepts:
 
 Most PC-based systems use either MBR or GPT.
 
-\subsection{Master Boot Record (MBR)}\label{master-boot-record-mbr}
+\subsection{Master Boot Record (MBR)}
+\label{sec:master-boot-record-mbr}
 
 MBR is the most common PC partitioning scheme. Introduce circa 1983 with
 DOS. This defines up to four primary partitions on a drive, .
 
-\begin{figure}
-\centering
-%\includegraphics{mbr_scheme.png}
-\caption{MBR partition scheme}
-\end{figure}
+\autoimage{mbr_scheme}{MBR partition scheme}{mbr-scheme}
 
 \begin{itemize}
 \item
@@ -87,29 +85,23 @@ DOS. This defines up to four primary partitions on a drive, .
   MBR limited to drives less than approx 2.2 TB.
 \end{itemize}
 
-\subsection{Extended Boot Record (EBR)}\label{extended-boot-record-ebr}
+\subsection{Extended Boot Record (EBR)}
+\label{sec:extended-boot-record}
 
 EBR allows more than four partitions on a drive. One MBR partition is
 designated as an extended partition. This \emph{extended partition} can
 hold one or more \emph{logical partitions}, .
 
-\begin{figure}
-\centering
-%\includegraphics{ebr_scheme.png}
-\caption{EBR}
-\end{figure}
+\autoimage{ebr_scheme}{EBR scheme}{ebr-scheme}
 
-\subsection{GUID Partition Table (GPT)}\label{guid-partition-table-gpt}
+\subsection{GUID Partition Table (GPT)}
+\label{sec:guid-partition-table}
 
 GPT is a more modern scheme and is associated with UEFI-based systems.
 UEFI is an alternative to BIOS and is used by newer PCs and Apple Macs.
 GPT layout is shown in .
 
-\begin{figure}
-\centering
-%\includegraphics{gpt_scheme.svg}
-\caption{GPT partition table scheme}
-\end{figure}
+\autoimage{gpt_scheme}{GPT partition table scheme}{gpt-scheme}
 
 Points to note:
 
@@ -137,7 +129,8 @@ Points to note:
   Boot process more complicated than MBR.
 \end{itemize}
 
-\section{Logical volumes}\label{logical-volumes}
+\section{Logical volumes}
+\label{sec:logical-volumes}
 
 Logical Volumes can sometimes offer a practical alternative to
 partitions. Partitioning can be considered as a thick provisioning of
@@ -162,7 +155,8 @@ depends on the host OS in use. The general ideas are:
   May support snapshot/restore operations.
 \end{itemize}
 
-\subsection{Linux LVM}\label{linux-lvm}
+\subsection{Linux LVM}
+\label{sec:linux-lvm}
 
 Linux has an inbuilt Logical Volume Manager (LVM). LVM is built into the
 kernel and managed by a number of commands in \texttt{/usr/sbin}.
@@ -175,66 +169,28 @@ which act like a partition, are then provisioned on a volume group.
 \item[Physical disks]
 appear to the system as block devices.
 \item[LVM partitions]
-are created on the physical disk, usually 1 for entire disk. Example of
-creating an LVM partition on entire of \texttt{/dev/sda}:
+are created on the physical disk, usually 1 for entire disk. 
 
-\begin{verbatim}
-\CommentTok{# Create a partition table on the drive}
-\ExtensionTok{parted} \NormalTok{-s /dev/sda mklabel gpt}
-\CommentTok{# Make a primary partition on whole drive}
-\ExtensionTok{parted} \NormalTok{-s /dev/sda unit mib mkpart primary 1 100%}
-\CommentTok{# Mark it as LVM}
-\ExtensionTok{parted} \NormalTok{-s /dev/sda set 1 lvm on}
-\end{verbatim}
-
-The newly-created LVM partition spanning the whole disk will appear as
-\texttt{/dev/sda1}.
 \item[Physical volumes]
 map to physical disks. Physical volumes are created on a partition using
 \texttt{pvcreate}.
 
-\begin{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-    \ExtensionTok{pvcreate} \NormalTok{/dev/sda1}
-    \CommentTok{# similar for another disk / partition}
-    \ExtensionTok{pvcreate} \NormalTok{/dev/sdb1}
-\end{Highlighting}
-\end{Shaded}
-\end{verbatim}
-
 Commands dealing with physical volumes start with \texttt{pv}. For
 example, we can use \texttt{pvdisplay} to show information about all
 physical volumes in the system.
+
 \item[Volume group]
 aggregates one or more physical volumes to create a virtual hard disk
 using \texttt{vgcreate}. The volume group has a name / label, here
 \texttt{vg-01}.
 
-\begin{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{# create vg-01 composed of /dev/sda1 and /dev/sdb1}
-    \ExtensionTok{vgcreate} \NormalTok{vg01 /dev/sda1 /dev/sdb1}
-\end{Highlighting}
-\end{Shaded}
-\end{verbatim}
-
 Commands dealing with volume groups start with \texttt{vg}. For example,
 we can use \texttt{vgdisplay} to show information about volume groups in
 the system. The volume group will then appear as a directory under
 \texttt{/dev}, in this case \texttt{/dev/vg01}.
+
 \item[Logical volume]
 is provisioned on the volume group, and acts as a virtual hard disk.
-
-\begin{verbatim}
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{# create a 10GB logical volume on vg01 named vol_data}
-    \ExtensionTok{lvcreate} \NormalTok{-L 10G -n vol_data vg01}
-\end{Highlighting}
-\end{Shaded}
-\end{verbatim}
 
 Commands dealing with logical volumes start with \texttt{lv}. For
 example, we can use \texttt{lvdisplay} to show information about logical
@@ -242,11 +198,12 @@ volumes in the system. The new logical volume will then appear in the
 \texttt{/dev/vg01} folder as \texttt{/dev/vg01/vol\_data}.
 \end{description}
 
-\begin{figure}
-\centering
-%\includegraphics{lvm.svg}
-\caption{LVM}
-\end{figure}
+\autoimage{lvm}{LVM}{lvm}
+
+Example of
+creating an LVM partition on entire of \texttt{/dev/sda}:
+
+\inputminted{bash}{lvm_commands.sh}
 
 \section{Useful links}\label{useful-links}
 
