@@ -1,0 +1,223 @@
+\documentclass[slides]{pgnotes}
+
+\title{Magnetic disks}
+
+\begin{document}
+\maketitle
+%\label{ch:magnetic-disks}
+
+\section{Components}
+\label{sec:components}
+
+\begin{minipage}{0.4\linewidth}
+  \autompimage{hard_drive_components_3d}{Hard drive components}{hard-drive-components}
+\end{minipage}
+\begin{minipage}{0.59\linewidth}
+\begin{itemize}
+\item
+  Cased with controller board, power / data connectors.
+\item
+  $\ge 1$ aluminimum platters mounted on spindle separated by small gap.
+\item
+  Motor spins platters at constant speed (5400, 7200 or 10000 RPM)
+\item
+  Platters (2-sided) coated with magnetically susceptible material.
+\item
+  Heads mounted on an actuator arm, moves all heads simultaneously.
+\item
+  Heads separated from platter by small air gap known as the
+  ``head flying height'' maintained by a cushion of air.
+
+  \begin{itemize}
+  \item
+    Before stopping the platter's rotation, the heads are moved towards
+    the ``landing zone''.
+  \item
+    If the heads contact the disk otherwise it is known as a ``head
+    crash'' and risks loss of data.
+  \end{itemize}
+\end{itemize}
+\end{minipage}
+
+\section{Geometry}
+\label{sec:geometry}
+
+\begin{minipage}{0.4\linewidth}
+\autompimage{disk_geometry}{Disk Geometry}{disk-geometry}
+\end{minipage}
+\begin{minipage}{0.59\linewidth}
+\begin{description}
+
+\item[Tracks:]
+concentric rings on each platter. Because of multiple platters, each
+with two sides, normally refer to cylinder and head to uniquely identify
+a track:
+
+\begin{description}
+\item[Cylinder:]
+identical set of tracks on both surfaces of all drive platters, numbered
+from zero at outer edge.
+\item[Head:]
+head identifies which platter and side that the track identified by the
+cylinder is located within.
+\end{description}
+
+\item[Sector / block:]
+subdivisions of tracks, each numbered from 1.
+\end{description}
+\end{minipage}
+
+\section{Logical Block Addressing (LBA)}
+\label{sec:logical-block-addressing}
+
+In order to be able to locate our data, we need a way to address
+sectors:
+
+\begin{description}
+\item[Cylinder-Head-Sector (CHS)]
+is a 3-part addressing scheme, where the head identifies the platter and
+side, the cylinder picks the track and the sector is with reference to
+the track. Host needs to be aware of disk geometry:
+\item[Logical Block Addressing (LBA)]
+is a simple linear addressing scheme, where the drive controller
+translates the linear address starting from zero to the 3-part C-H-S
+address.
+\end{description}
+
+Address in CHS and LBA format are internally binary numbers and often
+appear on real systems in hex form. However, they can be understood and
+manipulated as integers for familiarisation purposes.
+
+\subsection{Converting CHS to LBA}
+\label{sec:converting-chs-to-lba}
+
+The logical block address (LBA) for a given $C, H, S$ tuple corresponding to the cylinder, head and sector is given by the formula:
+
+\begin{align}
+  \mbox{LBA} & = ( C \times \mbox{HPC} + H ) \times \mbox{SPT} + ( S - 1 ) \label{eq:chs-to-lba}
+\end{align}
+
+where
+
+\begin{itemize}
+\item
+  HPC is the number of heads per cylinder
+\item
+  SPT is the number of sectors per track
+\end{itemize}
+
+\subsection{Converting LBA to CHS}\label{converting-lba-to-chs}
+
+The LBA to CHS operation requires \textit{three} separate formulas:
+
+\begin{align}
+  C & = \mbox{LBA} / ( \mbox{HPC} * \mbox{SPT} ) \label{eq:lba-to-c} \\
+  H & = ( \mbox{LBA} / \mbox{SPT} ) \% \mbox{HPC}  \label{eq:lba-to-h} \\
+  S & = ( \mbox{LBA} \% \mbox{SPT} ) + 1 \label{eq:lba-to-s}
+\end{align}
+
+Noting that:
+
+\begin{itemize}
+\item
+  The \texttt{/} symbol means integer division where any fractional
+  remainder is truncated (NOT rounded)
+\item
+  The \texttt{\%} symbol means modulo, i.e. the remainder.
+\end{itemize}
+
+As a sanity check, remember also that $H$ must be less than the number of
+heads per cylinder and that $S$ must be less than or equal to the number
+of sectors per track:
+
+\begin{align}
+  H & < HPC \label{eq:h-lt-hpc} \\
+  S & \le SPT \label{eq:s-le-spt}
+\end{align}
+
+\section{Zoned bit recording}
+\label{sec:zoned-bit-recording}
+
+Zoned bit recording increases the storage capacity of the disks by
+accounting for the varying density of sectors from the spindle to the
+edge:
+
+\begin{minipage}{0.69\linewidth}
+\begin{itemize}
+\item
+  \textbf{Cylinders} are grouped into zones based on their distance from the
+  spindle.
+\item
+  The \textbf{zones} are numbered (like cylinders) from zero at the disk edge.
+\item
+  Suitable number of \textbf{sectors} per cylinder assigned within each zone.
+\end{itemize}
+\end{minipage}
+\begin{minipage}{0.3\linewidth}
+\autompimage{zoned_bit_recording}{Zoned bit recording}{zoned-bit-recording}
+\end{minipage}
+
+\section{Capacity}
+\label{sec:magnetic-disk-capacity}
+
+Disk capacity is normally expressed in bytes, or suitable multiples like \si{\giga\byte}
+or \si{\tera\byte}. A confusing situation exists regarding actual vs advertised
+capacity.
+
+\begin{itemize}
+\item
+  Normally when dealing with binary units like bits and bytes, we use
+  binary prefixes, taking the multiplier to be 1024.
+\item
+  Drive manufacturers however like to use a decimal prefixes (multiplier
+  of 1000) when advertising, since it leads to higher numbers for the
+  same disk capacity.
+\end{itemize}
+
+\subsection{Converting from advertised to actual capacity}
+\label{sec:converting-from-advertised-to-actual-capacity}
+
+To convert from advertised capacity to actual capacity:
+
+\begin{enumerate}
+\item
+  Re-write the advertised capacity in bytes by multiplying successively
+  by 1000 to remove the decimal prefix, leaving the answer in bytes.
+\item
+  Successively divide the capacity in bytes by 1024 to re-write using
+  binary prefixes
+\end{enumerate}
+
+We can write this as a formula:
+\begin{align}
+  \mbox{actual} & = \frac{ \mbox{advertised} * 1000^x }{ 1024^x } \label{eq:advertised-to-actual-capacity}
+\end{align}
+where $x$ depends on the units in question:
+\begin{verbatim}
+kB =>  x = 1
+MB =>  x = 2
+GB =>  x = 3
+TB =>  x = 4
+PB =>  x = 5
+\end{verbatim}
+
+\subsection{Converting from actual to advertised capacity}
+\label{sec:converting-from-actual-to-advertised-capacity}
+
+To convert from actual capacity to advertised capacity:
+\begin{enumerate}
+\item
+  Re-write the actual capacity in bytes by multiplying successively by
+  1024 to remove the binary prefix, leaving the answer in bytes.
+\item
+  Successively divide the capacity in bytes by 1000 to re-write using
+  decimal prefixes.
+\end{enumerate}
+
+This process can also be written as a formula:
+\begin{align}
+  \mbox{advertised} & = \frac{\mbox{actual} * 1024^x}{1000^x} 
+\end{align}
+where $x$ depends on the units in question as above.
+
+\end{document}

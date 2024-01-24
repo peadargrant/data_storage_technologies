@@ -1,0 +1,61 @@
+digraph G {
+
+       labelloc="t";
+       label=< <b>Data Storage Technologies<br />Capacity conversions<br />Peadar Grant</b> >;
+
+	subgraph cluster_advertised {
+	label=< <b>Advertised capacity</b> >;
+
+	dvPB [ label=< <b>PB</b> = 1000<SUP>5</SUP> B > ];
+	dvTB [ label=< <b>TB</b> = 1000<SUP>4</SUP> B > ];
+	dvGB [ label=< <b>GB</b> = 1000<SUP>3</SUP> B > ];
+	dvMB [ label=< <b>MB</b> = 1000<SUP>2</SUP> B > ];
+	dvkB [ label=< <b>kB</b> = 1000<SUP>1</SUP> B > ];
+	dvB  [ label=< <b>B</b> = 1000<SUP>0</SUP> B >  ];
+
+	dvPB -> dvTB [label="* 1000", fontsize="11"];
+	dvTB -> dvPB [label=" / 1000", fontsize="11"];
+
+	dvTB -> dvGB [label="* 1000", fontsize="11"];
+	dvGB -> dvTB [label=" / 1000", fontsize="11"];
+	
+	dvGB -> dvMB [label="* 1000", fontsize="11"];
+	dvMB -> dvGB [label=" / 1000", fontsize="11"];
+
+	dvMB -> dvkB [label="* 1000", fontsize="11"];
+	dvkB -> dvMB [label=" / 1000", fontsize="11"];
+
+	dvkB -> dvB [label="* 1000", fontsize="11"];
+	dvB -> dvkB [label=" / 1000", fontsize="11"];
+
+	}
+
+	subgraph cluster_actual {
+	label=< <b>Actual capacity </b> >;
+
+	ctPB [ label=< <b>PB</b> = 1024<SUP>5</SUP> B > ];
+	ctTB [ label=< <b>TB</b> = 1024<SUP>4</SUP> B > ];
+	ctGB [ label=< <b>GB</b> = 1024<SUP>3</SUP> B > ];
+	ctMB [ label=< <b>MB</b> = 1024<SUP>2</SUP> B > ];
+	ctkB [ label=< <b>kB</b> = 1024<SUP>1</SUP> B > ];
+	ctB  [ label=< <b>B</b> = 1024<SUP>0</SUP> B >  ];
+
+	ctPB -> ctTB [label="* 1024", fontsize="11"];
+	ctTB -> ctPB [label=" / 1024", fontsize="11"];
+
+	ctTB -> ctGB [label="* 1024", fontsize="11"];
+	ctGB -> ctTB [label=" / 1024", fontsize="11"];
+	
+	ctGB -> ctMB [label="* 1024", fontsize="11"];
+	ctMB -> ctGB [label=" / 1024", fontsize="11"];
+
+	ctMB -> ctkB [label="* 1024", fontsize="11"];
+	ctkB -> ctMB [label=" / 1024", fontsize="11"];
+
+	ctkB -> ctB [label="* 1024", fontsize="11"];
+	ctB -> ctkB [label=" / 1024", fontsize="11"];
+
+
+}
+
+}
