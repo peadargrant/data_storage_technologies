@@ -1,0 +1,57 @@
+Example 1:  Converting CHS to LBA.
+A disk drive has 6 heads per cylinder and 16 sectors per track. 
+Compute the LBA for the CHS address ( 3, 4, 12 ). 
+
+HPC = 6
+SPT = 16
+C = 3
+H = 4
+S = 12
+
+LBA = ( ( C * HPC ) + H ) * SPT + ( S - 1 ) 
+    = ( ( 3 * 6   ) + 4 ) *  16 + ( 12- 1 ) 
+    = ( ( 18      ) + 4 ) *  16 + ( 11    )
+    = (              22 ) *  16 +   11
+    = 363
+
+
+3,4,12 = 363
+3,4,11 = 362
+3,4,10 = 361
+3,4, 9 = 360
+
+ 
+Example 2: Converting LBA to CHS.
+A disk drive has 6 heads per cylinder and 16 sectors per track. 
+Given the LBA address 360, compute its CHS address. 
+
+C = LBA / ( HPC * SPT ) 
+  = 360 / ( 6 * 16 ) 
+  = 3
+
+H = ( LBA / SPT ) % HPC 
+  = ( 360 /  16 ) %   6
+  = 4
+
+S = ( LBA % SPT ) + 1 
+  = ( 360 %  16 ) + 1 
+  = 9 
+
+
+Example 3:
+Drive advertised with 4GB capacity.
+What is its actual capacity?
+
+actual = advertised * 1000^3 / 1024^3
+       = 3.73 GB
+
+
+Example 4:
+Drive as 5GB capacity.
+What would it be advertised as?
+
+advertised = actual * 1024^3 / 1000^3
+           = 5      * 1024^3 / 1000^3
+           = 5.37 GB
+
+
