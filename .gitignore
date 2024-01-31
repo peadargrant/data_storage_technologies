@@ -6,3 +6,4 @@ _minted*
 *.pdf
 *.fls
 auto/
+*.toc
