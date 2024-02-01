@@ -1,0 +1,78 @@
+Example 2 from Notes
+Determine the average rotational latency for a 5400-rpm drive
+
+5400 RPM = 5400 / 60 = 90 revs / second
+L = 0.5 / 90
+  = 0.0056 s
+  = 5.6 ms
+
+
+Example 3 from Notes:
+Determine the transfer time given an internal transfer rate of 40MB/s and a block size of 32kB.
+
+X = 32 * 1024 / ( 40 * 1024^2 )
+  = 
+
+
+Direct attached problems
+
+(1) 
+A disk has a full-stroke seek time of 39 ms. Calculate its average seek time.
+
+average = full-stroke / 3 = 39ms/3 = 13ms
+
+
+(2)
+A disk has average seek time 11 ms. Calculate its full-stroke seek time.
+
+full stroke = average * 3
+     	    = 11ms * 3
+	    = 33 ms
+
+(3)
+Determine the average rotational latency for a 7200 RPM drive.
+
+revs per second = 7200 / 60 = 120
+L = 0.5 / 120 = 4.2 ms
+
+(4)
+A disk has seek time of 10 ms, average rotational latency of 5 ms and transfer time of 2 ms. Calculate the average disk service time.
+
+T_S  = T + L + X = 10ms + 5ms + 2ms = 17 ms
+
+
+(5)
+Calculate the number of IOPS a drive can perform if it has a disk service time of 15 ms.
+
+IOPS = 1 / T_S = 1 / 15ms = 1 / 0.015s = 67 IOPS
+
+
+(6)
+A disk can perform 83 IOPS. Determine its disk service time.
+
+T_S = 1 / IOPS = 1 / 83 = 0.012 s = 12 ms
+
+
+
+Q8: 
+Disk service time is 18 ms at controller utilisation 50%. Calculate expected disk service time at 70% utilisation
+
+R = T_S / ( 1 - U )
+
+U = 0.5  =>  1-U = 0.5
+
+18ms = T_S / 0.5
+9ms = T_S
+
+R = 9ms /  ( 1 - 0.7 )
+  = 9ms / 0.3
+  = 30 ms
+
+
+Q9:
+A drive is capable of performing 160 IOPS. Calculate the maximum permissable IOPS if the utilisation is limited to 60%.
+
+max permissable IOPS = 160 * 0.6
+    		     = 96 IOPS
+
+
