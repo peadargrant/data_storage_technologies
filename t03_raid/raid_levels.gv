@@ -1,0 +1,14 @@
+digraph G {
+
+	RAID -> Basic;
+	RAID -> Parity;
+
+	Basic -> Stripe;
+	Basic -> Mirror;
+
+	Parity -> RAID3;
+	Parity -> RAID4;
+	Parity -> RAID5;
+	Parity -> RAID6;
+
+}

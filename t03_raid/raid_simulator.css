@@ -1,0 +1,37 @@
+/*
+Stylesheet for RAID simulator
+Peadar Grant
+*/
+
+body {
+	font-family: "Verdana", sans-serif;
+}
+
+.warning {
+	background-color: darkred;
+	color: white;
+	font-weight: bold;
+}
+
+table.simulation {
+	width: 100%;
+	text-align: center;
+	border-style: solid;
+	border-collapse: collapse;
+}
+
+table.simulation th {
+	font-size: 120%;
+}
+
+table.simulation th, table.simulation td {
+	padding: 1em;
+	border-style: solid;
+	
+}
+
+td.disk_failed_label {
+	text-align: right;
+	font-weight: bold;
+}
+

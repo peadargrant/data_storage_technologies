@@ -1,0 +1,49 @@
+RAID Lab Solutions
+==================
+
+1. XOR operation
+
+A B | X
+----+--
+0 0 | 0
+0 1 | 1
+1 0 | 1
+1 1 | 0 <- differs from OR
+
+
+2. Partity block for 1 1 0 1
+
+1 XOR 1 XOR 0 XOR 1
+   0    XOR 0 XOR 1
+         0    XOR 1
+	       1 <- bit in the parity block
+
+3. Recover bits for 1 1 1 ? 1 w/ parity 1
+                     0  1   1           1
+		       1    1           1
+		           0            1
+			              1
+	unknown bit is 1
+
+4. need 3 disks
+   ceil( requirement / disk capacity )
+
+5. need 6 disks
+
+6. 0.75 = 75%
+
+7. Min no of disks for 90% in RAID-5
+
+E = n-1 / n
+0.9n = n - 1
+1 = 0.1n
+n = 10
+
+8. Min no of disks for 85% in RAID-6
+
+E = n - 2 / n
+0.85 = n - 2 / n
+0.85 n = n - 2
+2 = 0.15n
+n = 14 (always round up!)
+

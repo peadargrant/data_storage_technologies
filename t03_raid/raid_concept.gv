@@ -1,0 +1,20 @@
+digraph G {
+	rankdir=LR;
+
+	subgraph cluster_raidset {
+		label="RAID set";
+	d1 [label="Disk 1"];
+	d2 [label="Disk 2"];
+	d3 [label="Disk 3"];
+	}
+
+	hba [label="Host bus adapter"];
+
+	host [label="Host"];
+
+	host -> hba;
+	hba -> d1;
+	hba -> d2;
+	hba -> d3; 
+	
+	}

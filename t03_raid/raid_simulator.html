@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>RAID simulator</title>
+<link rel="stylesheet" href="raid_simulator.css" />
+<script src="raid_simulator.js"></script>
+</head>
+<body onload="start()">
+<div id="title">
+<h1>RAID simulator</h1>
+<p>by Peadar Grant</p>
+<p class="warning">THIS IS A WORK IN PROGRESS!</p>
+</div>
+<div id="input">
+<form onsubmit="return reject_submit();">
+<p><label for="raid_level">RAID level:</label><select id="raid_level">
+<option value="0">RAID-0</option>
+<option value="1">RAID-1</option>
+<option value="4">RAID-4</option>
+<option value="5">RAID-5</option>
+<option value="6">RAID-6</option>
+</select></p>
+<p><label for="number_of_disks">Number of disks:</label> <select id="number_of_disks">
+<option value="2">2</option>
+<option value="2">3</option>
+<option value="2">4</option>
+<option value="2">5</option>
+<option value="2">6</option>
+</select>
+</p>
+</form>
+</div>
+<div id="simulation">
+<table class="simulation">
+<thead>
+<tr>
+<th>Stripe</th>
+<th>Disk 0</th>
+<th>Disk 1</th>
+<th>Disk 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>A0</td>
+<td>A1</td>
+<td>Ap</td>
+</tr>
+<tr>
+<td>B</td>
+<td>B0</td>
+<td>B1</td>
+<td>Bp</td>
+</tr><tr>
+<td>C</td>
+<td>C0</td>
+<td>C1</td>
+<td>Cp</td>
+</tr><tr>
+<td>D</td>
+<td>D0</td>
+<td>D1</td>
+<td>Dp</td>
+</tr>
+<tr>
+<td class="disk_failed_label">Disk failed:</td>
+<td><input type="checkbox"></td>
+<td><input type="checkbox"></td>
+<td><input type="checkbox"></td>
+</tbody>
+</table>
+</div>
+</body>
+</html>
+
