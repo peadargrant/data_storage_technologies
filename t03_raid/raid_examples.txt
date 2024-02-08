@@ -1,0 +1,37 @@
+RAID-4
+
+D0 D1 D2    D3  == Disks
+
+A1 A2 A3    Ap  == Chunks of data
+ 0  1  0    
+   1 (A1 XOR A2)
+      1     1   ( ... XOR A3 ) 
+
+ 0  1  0    1  Stripe after parity computed
+
+
+If we fail disk D1:
+
+A1 A2 A3   Ap 
+ 0  ?  0    1  Data we have left
+
+Can recover A2 by XORing remaining data
+
+ 0 XOR 0 XOR 1 
+       0 XOR 1 = 1
+
+A1 A2 A3   Ap
+ 0  1  0    1
+
+
+
+Chunk of data (e.g. a byte)
+
+00010110  A1
+01011101  A2
+XOR bit-wise
+01001011  Ap
+
+
+ 
+
