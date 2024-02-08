@@ -9,6 +9,9 @@ Links below:
 
 2. [Thu Feb 01](https://media.heanet.ie/page/55cb50820c0c4474a212136f3bb54124): direct-attached storage
 
+3. [Thu Feb 08](https://media.heanet.ie/page/0515da2d49ff401ea41941d1abd09316): raid
+
+
 ## Please note
 
 - DkIT login required to view recordings
