@@ -1,0 +1,245 @@
+\documentclass[slides]{pgnotes}
+
+\title{Provisioning}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Block devices}
+\label{sec:block-devices}
+
+Each hard disk or hardware RAID set appears as a so-called block device.
+
+\begin{itemize}
+\item
+  UNIX-like systems show block devices in the \texttt{/dev} directory:
+
+  \begin{itemize}
+  \item
+    Linux show SATA devices as \texttt{sd} and a letter, such as
+    \texttt{/dev/sda}, \texttt{/dev/sdb}.
+  \item
+    Mac systems show \texttt{disk} followed by a number, like
+    \texttt{/dev/disk0}.
+  \item
+    Varies on other unix-like systems (e.g.~Xenix, AIX, BSD)
+  \end{itemize}
+\item
+  Windows systems will show block devices in the logical disk manager.
+  They will \emph{NOT} appear as drive letters!
+\end{itemize}
+
+A filesystem is then setup on the block device by formatting it. The
+filesystem organises the block device into the familiar structure of
+files and folders. Also the filesystem typically handles permissions and
+metadata storage.
+
+\section{Partitioning}
+\label{sec:partitioning}
+
+Partitioning allows us to divide a single block device into a number of
+separate segments that each appear as a separate block device. Each
+partition can have a different filesystem on it. In almost all cases
+fixed disks in PC-based systems are partitioned.
+
+There are a number of partitioning schemes. A few common concepts:
+
+\begin{itemize}
+\item
+  A partition table defines one or more partitions on the disk. This is
+  located in a known location, usually first block on drive.
+\item
+  The host's OS needs to boot usually from a disk. Partition scheme
+  needs to be compatible with the BIOS or UEFI to achieve this. Also the
+  boot loader may need to be set up.
+\end{itemize}
+
+Most PC-based systems use either MBR or GPT.
+
+\subsection{Motivation}
+
+\begin{enumerate}
+\item \textbf{OS requirements} such as Linux that generally require multiple partitions:
+  \begin{itemize}
+  \item Boot partition for startup files (\texttt{/boot})
+  \item Root partition for main system files (\texttt{/})
+  \item Swap partition to support virtual memory (same as Windows page file)
+  \end{itemize}
+\item \textbf{Multi-booting} different operating systems on a single computer.
+  \begin{itemize}
+  \item May be different ``instances'' of the same OS.
+  \item Less common since virtualisation commonplace but still useful.
+  \end{itemize}
+\item \textbf{Recovery} partitions enabling a installer or cloning tool to restore a system to a known-good configuration.
+  \begin{itemize}
+  \item Does depend on the disk itself not failing! (Prefer PXE-based cloning!)
+  \end{itemize}
+
+\end{enumerate}
+
+\section{Schemes}
+
+\subsection{Master Boot Record (MBR)}
+\label{sec:master-boot-record-mbr}
+
+MBR is the most common PC partitioning scheme:
+\begin{itemize}
+\item Introduce circa 1983 with DOS.
+\item Defines up to four primary partitions on a drive, \autoref{fig:mbr-scheme}.
+\end{itemize}
+
+\autoimage{mbr_scheme}{MBR partition scheme}{mbr-scheme}
+
+\textbf{Key points:} 
+
+\begin{itemize}
+\item
+  MBR layout closely linked with BIOS boot process. One partition marked
+  ``active''.
+\item
+  The MBR scheme stores the partition table at the beginning of the
+  first 512 bytes of the drive.
+
+  \begin{itemize}
+  \item 446 bytes bootloader
+  \item 64 bytes partition table
+  \item 2 bytes ``magic number'' (\texttt{0xAA55})
+  \end{itemize}
+\item
+  MBR limited to drives less than approx 2.2 TB.
+\end{itemize}
+
+\subsection{Extended Boot Record (EBR)}
+\label{sec:extended-boot-record}
+
+EBR allows more than four partitions on a drive:
+\begin{itemize}
+\item One MBR partition is designated as an extended partition.
+\item This \emph{extended partition} can hold one or more \emph{logical partitions}, \autoref{fig:ebr-scheme}.
+\end{itemize}
+
+\autoimage{ebr_scheme}{EBR scheme}{ebr-scheme}
+
+\subsection{GUID Partition Table (GPT)}
+\label{sec:guid-partition-table}
+
+GUID Partition Table (GPT) is a more modern scheme and is associated with UEFI-based systems.
+
+UEFI is an alternative to BIOS and is used by newer PCs and Apple Macs.
+GPT layout is shown in \autoref{fig:gpt-scheme}.
+
+\autoimage{gpt_scheme}{GPT partition table scheme}{gpt-scheme}
+
+\textbf{Points to note:}
+
+\begin{itemize}
+\item
+  GPT can define up to 128 partitions.
+\item
+  A so-called \emph{protective MBR} is present in the usual MBR
+  location:
+
+  \begin{itemize}
+  \item
+    Indicates entire disk is a single MBR partition.
+  \item
+    Shows disk partitioning (and other) software that the MBR scheme is
+    not in use.
+  \item
+    Prevents accidental overwriting by MBR utilities.
+  \end{itemize}
+\item
+  GPT partition table follows protective MBR.
+\item
+  GPT stores redundant copy of partition table at the end of the drive.
+\item
+  Boot process more complicated than MBR.
+\end{itemize}
+
+\section{Tooling}
+
+\subsection{Windows}
+
+\subsubsection{GUI}
+
+GUI using \textit{Computer Management}, \autoref{fig:logical-disk-manager}.
+
+\autoimage{logical_disk_manager}{Windows Logical Disk Management}{logical-disk-manager}
+
+\subsubsection{PowerShell}
+
+Microsoft are encouraging the use PowerShell in more recent Windows releases to perform system administration tasks:
+
+\begin{itemize}
+\item Replicability for aiding remote assistance and scripting
+\item Enables partitioning operations to be done remotely over text links
+\end{itemize}
+
+\subsection{Linux}
+
+\begin{itemize}
+\item Relies on \texttt{parted} command for both MBR and GPT partitions.
+\item Other commands such as \texttt{lsblk} for listing also.
+\item Partitions will appear as nodes in the \texttt{/dev} directory:
+  \begin{itemize}
+  \item Precise names will vary even among linux distributions.
+  \item Physical disk will appear as \texttt{sd} and letter e.g. \texttt{/dev/sda}
+  \item Partitions will appear as \texttt{/dev/sda1} etc. 
+  \end{itemize}
+\item Same for other UNIX operating systems.
+\end{itemize}
+
+\newpage
+\subsection{Apple}
+
+\begin{itemize}
+\item Macs hava a graphical \textbf{Disk Utility} app, \autoref{fig:disk-utility}.
+\item Also can be managed in Bash/zsh using \texttt{diskutil} command. 
+\end{itemize}
+
+\newpage
+\autoimage{disk_utility}{Disk utility}{disk-utility}
+
+\newpage
+\section{Partition operations}
+
+\subsection{Standard operations}
+
+\begin{enumerate}
+\item Listing availabile block devices
+\item Listing existing partitions and free space
+\item Creating a partition
+\item Deleting a partition
+\end{enumerate}
+
+\subsection{Resizing}
+
+Can shrink or grow a partition:
+\begin{itemize}
+\item must take account of filesystem using it
+\item Generally avoid doing unless you absolutely have to.
+\end{itemize}
+
+\newpage
+\subsubsection{Shrinking}
+
+Shrinking a partition has two separate operations:
+\begin{enumerate}
+\item Shrink the filesystem first (see later on!).
+\item Then shrink the partition.
+\end{enumerate}
+
+\subsubsection{Growing}
+
+Growing a partition similarly consists of two separate operations:
+\begin{itemize}
+\item Extend the partition.
+\item Then extend the filesystem.
+\end{itemize}
+
+
+\end{document}
+
