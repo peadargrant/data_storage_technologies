@@ -1,0 +1,296 @@
+\documentclass[slides]{pgnotes}
+
+\title{Filesystems}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Disk-based filesystems}
+\label{sec:disk-based-filesystems}
+
+Disk-based file systems interposes between the application layer
+(including the user-space OS tools like File Manager) and the block
+devices. A file system is created on a block device (= a block device is
+formatted with a file system) that is then mounted by the host's
+operating system.
+
+\subsection{Common filesystems}
+\label{sec:common-filesystems}
+
+As of the present time the most common disk-based filesystems are:
+
+\begin{description}
+\item[Microsoft Windows:]
+normally NT File System (NTFS) for fixed disks.
+\item[Apple Mac OS X:]
+APFS (solid-state disks only), HFS+ (formerly all fixed media, remains
+on magnetic disks only)
+\item[Linux-based]
+systems commonly use ext4, but a large range of other systems commonly
+appear: ext3, xfs, reiserfs, ZFS*
+\item[UNIX-based systems]
+tend to have an OS-specific filesystem w/ similar behaviour to linux,
+often ZFS
+\end{description}
+
+Wikipedia has collated a
+\href{https://en.wikipedia.org/wiki/Comparison_of_file_systems}{comparison
+of file systems}.
+
+\subsection{Roles of filesystems}\label{sec:roles-of-filesystems}
+
+\begin{description}
+\item[Space management]
+  using allocation table. Dealing with \emph{fragmentation}.
+\item[Naming]
+  possibly case ( sensitive \textbar{} insensitive \textbar{} preserving )
+\item[Hierarchy]
+  using directories.
+  \begin{itemize}
+    
+  \item
+    Historically and some specialist systems: \textbf{flat} filesystem
+  \end{itemize}
+\item[Metadata]
+  such as file creation / modification time
+\item[Permissions management]
+  via metadata to allow ( read \textbar{} write \textbar{} execute ) to
+  specific users.
+  
+  \begin{itemize}
+  \item
+    Common permissions are owner / group / world (others) in UNIX.
+  \item
+    The host OS, not the filesystem, actually enforces these restrictions.
+  \end{itemize}
+\item[Maintaining integrity]
+  using redundancy, checksums.
+\item[Durable storage]
+  by journalling
+\end{description}
+
+\section{Journalling}
+\label{sec:journalling}
+
+Durability is the key expectation:
+\begin{itemize}
+\item data once written to filesystem isn't lost (within reasonable assumptions).
+\end{itemize}
+
+Journalling is where the intent to change data is recorded to the journal before the actual data itself is modified:. 
+\begin{enumerate}
+\item
+  Data is written to the on-disk journal
+\item
+  The actual on-disk file data is changed
+\item
+  The journal is deleted
+\end{enumerate}
+
+\autoimage{journalling_filesystem}{Journalling filesystem}{journalling-filesystem}
+
+\subsection{Alternatives to Journalling}
+\label{sec:alternatives-to-journalling}
+
+\begin{description}
+\item[Copy-on-write:]
+where a modification is first written and then the original deleted
+\item[Log-structured file system:]
+the journal itself is the filesystem
+%\item[Soft updates]
+\end{description}
+
+\section{Single vs multi-root}
+\label{sec:single-vs-multi-root}
+
+Although more an OS-characteristic, there is an important difference between single and multi-root operating systems that becomes relevant for discussion of filesystems:
+
+\begin{description}
+\item[Single root] operating systems
+  \begin{itemize}
+  \item boot with \textbf{one} filesystem mounted as the \textbf{root} \texttt{/} directory.
+  \item All others are attached at \textit{mountpoints}  within the root directory.
+  \end{itemize}
+\item[Multi-root] operating system has multiple roots:
+  \begin{itemize}
+  \item often indicated by drive-letters e.g. \texttt{C:,\ D:}.
+  \item other OSes (e.g. VMS, Novell) use volume labels (e.g. \texttt{SYS})
+  \end{itemize}
+\end{description}
+
+In general, most UNIX-like OS are single root. Windows is multi-root.
+
+
+\subsection{Linux file system operations}
+\label{sec:linux}
+
+Linux and UNIX tend to use similar commands to those shown here:
+\begin{itemize}
+\item Always check the precise requirement for your OS.
+\end{itemize}
+  
+\subsection{Creation}
+\label{sec:creation}
+
+File system creation, also called Formatting, is done through the \texttt{mkfs} command:
+
+\inputminted{bash}{fs_creation.sh}
+
+
+\subsection{Mounting}\label{mounting}
+
+Mounting is where a particular a block device formatted with a particular filesystem is attached into the file system hierarchy:
+\begin{itemize}
+\item A folder, called the ``mount point'' is created on an existing (usually the root) filesystem.
+\item Mounting the additional drive then ``covers up'' that folder with root of the mounted drive.
+\end{itemize}
+
+\newpage
+Consider the example of mounting a block device \texttt{/dev/sdb1} at
+the mountpoint \texttt{/mnt/data}:
+
+\inputminted{bash}{fs_mounting.sh}
+
+
+\subsection{Mounting on boot}\label{mounting-on-boot}
+
+The manual method has some shortcomings:
+\begin{itemize}
+\item Manual mounts / unmounts persist only as long as the system is running.
+\end{itemize}
+Instead we'd like to have a configuration file of mountable filesystems.\\
+The \href{https://en.wikipedia.org/wiki/Fstab}{\texttt{/etc/fstab}} file provide this:
+\begin{itemize}
+\item lists filesystems that can be mounted / unmounted without specifying the block device to the \texttt{mount} command
+\item additionally can indicate these should be mounted automatically when the system starts up.
+\end{itemize}
+
+\newpage
+\subsection{/etc/fstab format}
+
+The \texttt{/etc/fstab} file format is whitespace separated of the following fields:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \texttt{device-spec} of the device to mount (device name, label, UUID,
+  other means to idenitfy)
+\item
+  \texttt{mount-point} where filesystem can be accessed once mounted
+\item
+  \texttt{fs-type} identifying the filesystem
+\item
+  \texttt{options} that may be needed: \texttt{defaults} per-filesystem,
+  \texttt{noauto} to not mount on boot
+\item
+  \texttt{dump} - for use by the \texttt{dump} program for backups
+  (backups to be discussed later)
+\item
+  \texttt{pass} - order for \texttt{fsck} to check errors at boot time:
+  0=don't, 1=during, 2=after
+\end{enumerate}
+
+\newpage
+More advanced generic example, on Wikipedia:
+
+\begin{verbatim}
+# device-spec   mount-point     fs-type      options                                          dump pass
+LABEL=/         /               ext4         defaults                                            1 1
+/dev/sda6       none            swap         defaults                                            0 0
+none            /dev/pts        devpts       gid=5,mode=620                                      0 0
+none            /proc           proc         defaults                                            0 0
+none            /dev/shm        tmpfs        defaults                                            0 0
+
+# Removable media
+/dev/cdrom      /mnt/cdrom      udf,iso9660  noauto,owner,ro                                     0 0
+
+# NTFS Windows 7 partition
+/dev/sda1       /mnt/Windows    ntfs-3g      quiet,defaults,locale=en_US.utf8,umask=0,noexec     0 0
+
+# Partition shared by Windows and Linux
+/dev/sda7       /mnt/shared     vfat         umask=000                                           0 0
+
+# Mounting tmpfs
+tmpfs           /mnt/tmpfschk   tmpfs        size=100m                                           0 0
+
+# Mounting cifs
+//cifs_server_name/ashare  /store/pingu    cifs         credentials=/root/smbpass.txt            0 0
+
+# Mounting NFS
+nfs_server_name:/store    /store          nfs          rw                                        0 0
+\end{verbatim}
+
+Simpler sample of \texttt{/etc/fstab} on a Raspberry-Pi:
+
+\begin{verbatim}
+proc            /proc           proc    defaults          0       0
+PARTUUID=af832fc2-01  /boot           vfat    defaults          0       2
+PARTUUID=af832fc2-02  /               ext4    defaults,noatime  0       1
+/dev/sdb2             /data           ext4    defaults,noatime  0       0
+# a swapfile is not a swap partition, no line here
+#   use  dphys-swapfile swap[on|off]  for that
+\end{verbatim}
+
+Can often also identify block devices by other means than their
+\texttt{/dev} node, for example partition UUID. Avoids ambiguities if
+drives are swapped around. Check help for \texttt{mount} command to be
+sure.
+
+\subsubsection{Automounters}\label{automounters}
+
+Other means to identify and mount filesystems exist on Linux
+(particularly) nowadays: systemd unit files, pmount, automount.
+
+\subsection{Windows}\label{windows}
+
+\subsubsection{Creation}\label{creation-1}
+
+By demonstration through Computer Management.
+
+\subsubsection{Mounting}\label{mounting-1}
+
+Generally a drive letter will be assigned.
+
+Windows can also do a UNIX-style mount to a folder within another
+filesystem. Not commonly used though.
+
+\section{Virtual filesystems}
+\label{sec:virtual-filesystems}
+
+A filesystem as such is implemented within the operating system normally
+in the form of code. This may in fact allow filesystems to be created
+that do not directly reside on any block device.
+
+\begin{description}
+\item[Network filesystem]
+where the host connects to a filesystem located on another computer
+using file-sharing protocols like SMB, NFS.
+\item[Object storage filesystems]
+where the host connects to a storage service that does not itself
+implement the normal hierarchical filesystem, but can appear to do so:
+
+\begin{itemize}
+
+\item
+  Software to map WebDAV and systems like S3
+\end{itemize}
+\item[Device filesystem]
+usually mounted at \texttt{/dev} used in UNIX-like OSes to provide
+access and permission control to peripheral devices (e.g.~HID, serial,
+LPT, block devices).
+\item[Special filesystems]
+seen in UNIX:
+
+\begin{itemize}
+\item
+  \texttt{sysfs} and \texttt{configfs} kernel
+\item
+  \texttt{/proc} within info on processes
+\end{itemize}
+\end{description}
+
+\end{document}
+
