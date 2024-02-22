@@ -1,0 +1,115 @@
+\documentclass[slides]{pgnotes}
+
+\title{LVM}
+
+\begin{document}
+
+\maketitle
+
+\section{Logical volumes}
+\label{sec:logical-volumes}
+
+Logical Volumes can sometimes offer a practical alternative to
+partitions:
+\begin{itemize}
+\item \textbf{Partitioning} can be considered as a \textbf{thick provisioning} of disk space.
+\item \textbf{Logical volumes} represent a \textbf{thin provisioning} of disk space.
+\end{itemize}
+  
+Unlike partitoning, logical volumes are OS-dependent and their handling
+depends on the host OS in use.
+
+\subsection{Key concepts}
+
+\begin{itemize}
+\item
+  Volumes are created which appear to OS as a partition, which are then formatted and mounted in the usual way.
+\item
+  Usually a single disk is used in its entirety:
+  \begin{itemize}
+  \item Single large partition is created to hold the logical volumes.
+  \item Sometimes a small standard boot partition is required.
+  \end{itemize}
+\item
+  Logical Volume manager can resize volumes:
+  \begin{itemize}
+  \item For this to work non-destructively, file system must support resizing.
+  \end{itemize}
+\item
+  May support snapshot/restore operations.
+\end{itemize}
+
+\section{Linux LVM}
+\label{sec:linux-lvm}
+
+Linux has an inbuilt Logical Volume Manager (LVM). LVM is built into the
+kernel and managed by a number of commands in \texttt{/usr/sbin}.
+
+LVM takes over partitions on physical disks as physical volumes.
+Physical volumes are aggregated into volume groups. Logical Volumes,
+which act like a partition, are then provisioned on a volume group.
+
+\subsection{Partition layout}
+\begin{description}
+\item[Physical disks]
+appear to the system as block devices.
+\item[LVM partitions]
+are created on the physical disk, usually 1 for entire disk. 
+\end{description}
+
+\subsection{Physical volumes}
+
+Physical volumes map to physical partitions.
+Commands dealing with physical volumes start with \texttt{pv}:
+\begin{itemize}
+\item  Physical volumes are created on a partition using \texttt{pvcreate}.
+\item \texttt{pvdisplay} to show information about all physical volumes in the system.
+\end{itemize}
+
+\subsection{Volume group}
+
+A volume group aggregates one or more physical volumes to create a virtual block device:
+\begin{itemize}
+\item This is conceptually the LVM equivalent of a hard disk.
+\item The volume group has a name / label, e.g. \texttt{vg01}.
+\end{itemize}
+
+Commands dealing with volume groups start with \texttt{vg}:
+\begin{itemize}
+\item Volume group is created on a Physical volume using \texttt{vgcreate}.
+\item Use \texttt{vgdisplay} to show information about volume groups in the system.
+\end{itemize}
+
+Once created, the volume group will then appear as a directory under \texttt{/dev}, e.g. \texttt{/dev/vg01}.
+
+\subsection{Logical volume}
+
+A logical volume is provisioned on the volume group, and acts as a virtual partition.
+
+Commands dealing with logical volumes start with \texttt{lv}:
+\begin{itemize}
+\item Use \texttt{lvdisplay} to show information about logical volumes in the system.
+\end{itemize}
+
+Logical volumes will appear in \texttt{/dev} as a subfolder of their volume group:
+\begin{itemize}
+\item e.g. in the \texttt{/dev/vg01} folder as \texttt{/dev/vg01/vol\_data}.
+\end{itemize}
+
+
+\autoimage{lvm}{LVM}{lvm}
+
+
+\section{Useful links}\label{useful-links}
+
+\begin{itemize}
+\item
+  \url{https://www.digitalocean.com/community/tutorials/an-introduction-to-lvm-concepts-terminology-and-operations}
+\item
+  \url{https://www.server-world.info/en/note?os=Ubuntu_17.04\&p=iscsi\&f=1}
+\item
+  \url{https://en.wikipedia.org/wiki/Logical_volume_management}
+\end{itemize}
+
+\end{document}
+
