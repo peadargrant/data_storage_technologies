@@ -11,6 +11,7 @@ Links below:
 
 3. [Thu Feb 08](https://media.heanet.ie/page/0515da2d49ff401ea41941d1abd09316): raid
 
+4. [Thu Feb 15](https://media.heanet.ie/page/e2c5b7099ca1448bb247f173c69594dd): partitioning
 
 ## Please note
 
