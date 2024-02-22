@@ -1,0 +1,7 @@
+graph G {
+
+rankdir=LR;
+host [label="Host", style=filled, shape=box, fillcolor=palegreen];
+storage [label="Storage", style=filled, shape=cylinder, fillcolor=lightblue];
+host -- storage [headlabel="N", taillabel="N"];
+	}

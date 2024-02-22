@@ -1,0 +1,146 @@
+\section{SAN integration}
+\label{sec:san-integration}
+
+FC SAN primarily is a highly reliable, high-perforamance,
+data-centre-centric solution that comes at considerable cost. The FCP is
+non-routable, and is therefored confined spatially. Often we want to
+broaden access to our existing FC SAN by means of integration
+technologies.
+
+Generally, we shouldn't start out building a SAN that needs to use these
+primarily. Like WiFi-extenders, poorly thought-out SAN integration can
+do more harm than good!
+
+\section{Fibre Channel over Ethernet (FCoE)}
+\label{sec:fibre-channel-over-ethernet-fcoe}
+
+FCoE is where FCP runs over existing ethernet infrastructure, usually on
+CAT5/6 cabling. It can coexist with LAN traffic. Normally its used to
+connect ethernet-attached hosts to an existing FC SAN fabric.
+
+Layers 1 and 2 are the same we are familiar with from IP networking. The
+key difference occurs at Layer 3: FCP is encapsulated in ethernet
+frames.
+
+\subsection{FCoE frame format}
+\label{sec:fcoe-frame-format}
+
+\autoref{fig:fcoe-frame} shows the format of a FCoE frame.
+The Ethertype denotes the frame as FCoE (as opposed to IP).
+
+\autoimage{fcoe_frame}{FCoE frame (Wikipedia)}{fcoe-frame}
+
+\subsection{FCoE fabric}
+\label{sec:fcoe-fabric}
+
+FC natively has a lossless transport. Protocols such as IP running over
+ethernet normally are tolerant of frames being dropped when congestion
+is high. FCoE requires extensions to the ethernet protocol to guarantee
+lossless transmission, called Priority Flow Control.
+
+In practical terms, we need to use a FCoE-aware switch.
+
+\subsection{FCoE-FC gateway}
+\label{sec:fcoe-fc-gateway}
+
+A FCoE gateway will connect FCoE devices to an existing FC network, .
+The gateway acts as a so-called fibre channel forwarder to bridge the
+FCoE to the FC. Additionally it provides the normal fabric services.
+
+\autoimage{fcoe_gateway}{FCoE gateway}{fcoe-gateway}
+
+This is actually quite a complex process under the hood, as mapping is
+required from WWNs to MAC addresses. The gateway device is often a FC
+switch/director with an FCoE card fitted.
+
+\subsection{FCoE host hardware}
+\label{sec:fcoe-host-hardware}
+
+Hosts traditionally use a FCoE HBA to connect to the FCoE-provided
+fabric. Software initiators are theoretically possible, like
+\texttt{open-fcoe} but are unusual to see in use.
+
+Since FCoE and IP LAN traffic run over ethernet, we can converge the two
+using a FCoE Converged Networking Adapter. This is similar to the CNA we
+discussed for iSCSI, in that it includes the SAN HBA and NIC on one
+card. shows a CNA handling both sets of traffic which split at a
+FCoE-aware switch.
+
+\autoimage{fcoe_cna}{FCoE converged networking (Wikipedia)}{fcoe-cna}
+
+It is generally recommended that VLANs are used to separate FCoE and IP
+traffic where they co-exist.
+
+\subsection{FCoE Application Areas}
+\label{sec:fcoe-application-areas}
+
+FCoE's primary purpose is to extend FC SAN by re-using CAT-6 cabling
+and/or existing ethernet networking. It would be highly unusual to build
+an entire SAN primarily around FCoE.
+
+Although converged networking is beneficial in many applications, FCoE
+would not be a primary means of doing so.
+
+FCoE requires gateways, FCoE-aware switches and other expensive
+hardware. It is normally not cost effective compared to IP SAN.
+
+FCoE is not routable, and can't cross Layer-2 boundaries. Therefore it's
+primarily seen within a data centre or single-building environment.
+
+\textbf{In summary, FCoE is best used to connect hosts to an existing FC
+SAN over CAT5/6-carried ethernet where it is impractical to extend the
+FC SAN directly to them.}
+
+\section{Fibre Channel over IP (FCIP)}
+\label{sec:fibre-channel-over-ip}
+
+Fibre Channel over IP (FCIP) encapsulates fibre channel within IP
+packets on an existing IP network. FCIP is normally used to tunnel
+directly between two remote FC networks, , and is not used by individual
+hosts.
+
+\autoimage{fcip_network}{FC san extended using FCIP (TechTarget)}{fcip-network}
+
+Configuration is generally needed of the two bridges and the network
+between them. The encapsulation process does lower performance compared
+to native FC or FCoE.
+
+\subsection{FCIP Application areas}
+\label{sec:fcip-application-areas}
+
+\textbf{Generally FCIP is appropriate where we need to bridge two
+physically remote FC networks into one fabric across a routed IP or WAN
+link.} It is our only option when the link involves a WAN or having to
+cross Layer-2 boundaries.
+
+If the two FC networks can be connected directly CAT5/6 then FCoE may be
+more suitable than FCIP.
+
+Given that the FCIP link is slower than other links in the FC fabric, it
+works best where there is comparatively little traffic on the bridged
+link. FCIP is therefore good for scenarios like offsite backup,
+replication and accessing archival storage.
+
+\section{FC-iSCSI integration}
+\label{sec:fc-iscsi-integration}
+
+FC and iSCSI both encapsulate SCSI commands, so conceptally they can be
+bridged. This is normally done using a FC to iSCSI gateway, . As iSCSI
+runs over TCP/IP it is routable across Layer-2 boundaries.
+
+\autoimage{fc_iscsi_bridge}{iSCSI hosts accessing FC storage via gateway (Cisco)}{fc-iscsi-bridge}
+
+\subsection{Application areas}
+\label{sec:application-areas}
+
+\begin{itemize}
+\item
+  Leveraging existing FC SAN for lower-traffic hosts at minimal cost
+  using software initiators or inbuilt HBAs.
+\item
+  Allowing iSCSI-capable workstations to directly access FC-SAN storage.
+\item
+  Giving access to FC SAN for servers that need to be located distant
+  from the FC SAN.
+\end{itemize}
+

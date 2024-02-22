@@ -1,0 +1,353 @@
+\documentclass[slides]{pgnotes}
+
+\title{Fibre Channel SAN}
+
+\begin{document}
+
+\maketitle
+
+\section{Fibre Channel}
+\label{sec:fibre-channel}
+
+\begin{center}
+  \textbf{Fibre Channel (FC) SAN} normally involves the use of \textbf{Fibre Channel Protocol (FCP)} over an optical fibre network.
+  \end{center}
+
+\subsection{Key concepts}
+
+\begin{itemize}
+\item
+  Block devices exposed as LUNs on targets that initiators connect to.
+\item
+  FC normally encapsulates SCSI commands.
+\item
+  FCP is analogus to IP in ways, and has its own addressing schemes etc.
+\item
+  Assume that the FC network is solely for FCP stroage traffic.
+\item
+  FC normally uses hardware HBA.
+\end{itemize}
+
+\subsection{FC SAN Components}
+\label{sec:fc-san-components}
+
+\begin{description}
+\item[Host-Bus Adapter (HBA):] connects the host to the FC SAN.
+  \begin{itemize}
+  \item Normally appears as a standard disk controller to the operating system
+  \item Similar to how hardware RAID controller encapsulates a RAID set
+  \item \textit{Note that the fibre channel network is entirely separate from the host's LAN connection(s).}    
+  \end{itemize} 
+\item[Fabric components:] such as hubs, switches, etc. Specific to Fibre Channel!
+\end{description}
+
+\autoimage{fc_hba}{FC HBA}{fc-hba}
+
+\subsection{FC Connections}
+\label{sec:fc-connections}
+
+Fibre Channel SAN usually involves optical fibre transmission:
+
+\begin{itemize}
+\item
+  Both multi-mode (MMF) OM1, OM2, OM3 types and single-mode used.
+  \begin{itemize}
+  \item Multi-mode used within data centre / suite (under 500m)
+  \item Single-mode used for longer distances (over 500m).
+  \end{itemize}
+\item
+  The standard SC, LC, ST connectors are often seen.
+\item
+  Confusingly, fibre channel can also be carried over copper.
+\end{itemize}
+
+\autoimage{fc_connectors}{Fibre Channel Connectors}{fc-connectors}
+
+\autoimage{fc_connectors_hi_density}{Fibre Channel Connectors}{fc-connectors-hi-density}
+
+\section{FC Fabric types}
+\label{sec:fc-fabric-types}
+
+\subsection{Point-to-Point}
+\label{sec:point-to-point}
+
+The simplest fabric is a point-to-point where a single host node
+connects to a single storage node. Both the host and storage nodes ports
+are N\_ports (node ports).
+
+\autoimage{fc_point_to_point}{Point-To-Point}{fc-point-to-point}
+
+These are sometimes seen where a single storage appliance has multiple node (N)
+ports, each of which is connected to an N port on a host.
+
+\subsection{Switched fabric}
+\label{sec:switched-fabric}
+
+Most SAN implementations involve a switched fabric, \autoref{fig:fc-switched-fabric}.
+
+\autoimage{fc_switched_fabric}{FC switched fabric}{fc-switched-fabric}
+
+\subsection{Port types}
+
+Within a switched fabric, ports are designated as different types. Main
+types are:
+
+\begin{description}
+\item[N\_port (node port)]
+connects either to another N\_port as in this example or to an F port on
+a switch.
+\item[F\_port (fabric port)]
+on a switch connects to an N\_port on node.
+\item[E\_port (expansion port)]
+on a switch connects to an E\_port on another switch.
+
+\begin{itemize}
+
+\item
+  Link between two switches is called an \textbf{inter-switch link}
+  (ISL).
+\end{itemize}
+\item[G\_port]
+can act as either an \(F\) or \(G\) port.
+\end{description}
+
+We say that a fabric has a number of \textbf{tiers} with an \(n\)-tier
+fabric requiring traffic to pass through up to \(n\) switches.
+
+\section{FC Layers}
+\label{sec:fc-layers}
+
+Fibre Channel is conceptually divided into 5 layers (numbered 4-0):
+\begin{description}
+\item[FC-4] \textbf{Protocol-mapping} layer, where upper level protocols ULPs such as SCSI, IP, and others are encapsulated into Information Units (IUs).
+\item[FC-3] \textbf{Common services} layer, thin layer that could implement functions like encryption or RAID redundancy algorithms; multiport connections; not used.
+\item[FC-2] \textbf{Signaling Protocol}, defined by the Fibre Channel Framing and Signaling 4 (FC-FS-5) standard, consists of the low level Fibre Channel network protocols; port to port connections;
+\item[FC-1] \textbf{Transmission Protocol}, which implements line coding of signals;
+\item[FC-0] \textbf{physical layer}, includes cabling, connectors etc
+\end{description}
+  
+\autoimage{fc_layers}{Fibre Channel Layers}{fc-layers}
+
+
+\section{Encapsulation}\label{encapsulation}
+
+FC SAN encapsulates SCSI data in FC frames.
+
+\begin{description}
+\item[4-bytes start-of-frame]
+\item[24-byte frame header]
+including source and destination addresses (specific to FC)
+\item[2112-byte data field]
+consisting of:
+
+\begin{description}
+\item[64-byte header (optional)]
+\item[2048-byte data payload]
+containing SCSI commands (just as with iSCSI in IP SAN)
+\end{description}
+\item[4-byte CRC error check]
+\item[4-byte end-of-frame]
+\end{description}
+
+
+\autoimage{fc_frame}{FC frame}{fc-frame}
+
+\section{FC Addressing}
+\label{sec:addressing}
+
+As we can see from the FC frames, we need addresses to identify the
+source and destination of FC traffic. Like IP over Ethernet, FC has two
+different types of addresses:
+
+\subsection{FC address}
+\label{sec:fc-address}
+
+FC addresses are 24-bit dynamically assigned addresses:
+
+\begin{description}
+\item[Domain ID (8-bit)]
+is a unique number assigned to each switch in fabric. Only 239 addresses
+available as some reserved for fabric management services.
+\item[Area ID (8-bit)]
+denotes a group of ports on one switch (such as a single card)
+\item[Port ID (8-bit)]
+port within the area ID within the domain ID.
+\end{description}
+
+
+\autoimage{fc_address}{FC address (EMC ISM book)}{fc-address}
+
+\subsection{Fabric address space}
+
+Maximum number of nodes in switched fabric:
+\begin{align}
+  \mbox{239 domains} \times \mbox{256 areas} \times \mbox{256 ports} & = 15663104 \label{eq:max-number-of-nodes-switched-fabric}
+\end{align}
+
+Address assignment:
+\begin{itemize}
+\item FC address is automatically assigned when an \(N\) port logs on to the fabric.
+\item Like DHCP-assigned IP address but deterministic.
+\end{itemize}
+
+\subsection{WorldWide Names (WWNs)}
+\label{sec:wwn}
+
+WorldWide Names (WWNs) are FC equivalent of MAC addresses:
+\begin{itemize}
+\item They are considered fixed and normally set/burned in in factory.
+\item WWNs are mapped to FC addresses using the Name Server.
+\item Opposite to IP networking, we often want to find devices using WWNs which are resolved
+to FC addresses.
+\end{itemize}
+
+\autoimage{fc_wwn}{FC world wide name (WWN)}{fc-wwn}
+
+
+\section{Fabric services}
+\label{sec:fabric-services}
+
+Each switch provides a number of services at fixed FC addresses (drawn from the reserved range), \autoref{fig:fc-fabric-services}.
+
+\begin{description}
+\item[Fabric Login Server (FFFFFE)] node login (connection) to the fabric.
+\item[Name Server (FFFFFC)] tracks FC address to WWN associations. Like ARP in IP.
+\begin{itemize}
+\item
+  Synchronises automatically with name servers in other switches in fabric.
+\item
+  \emph{Formerly called Distributed Name Service but was ambiguous since
+  DNS abbreviation means Domain Name Service which is entirely
+  different.}
+\end{itemize}
+\item[Fabric Controller (FFFFFD)]updates nodes and other switches when changes in the fabric occur, likea device or link being added or removed.
+\item[Management Server (FFFFFA)]
+  allows managment software to monitor and control the operation of the
+  fabric.
+\end{description}
+
+\autoimage{fc_fabric_services}{FC fabric services (EMC ISM book)}{fc-fabric-services}
+
+\subsection{State Change Notifications (SCN)}
+
+When changes occur the Fabric controller distributes: 
+\begin{description}
+\item[Registered State Change Notifications (RSCNs)]
+  to nodes attached to its own ports.
+\item[Switch Registered State Change Notifications (SW-RSCNs)]
+  to other switches in the fabric. This causes the name servers to update.
+\end{description}
+
+
+\subsection{FC Login types}
+\label{sec:fc-login-types}
+
+\begin{description}
+\item[Fabric Login (FLOG)]
+when an \(N\) port (on a host / storage device) connects to an \(F\)
+port (on a switch):
+
+\begin{itemize}
+\item
+  During FLOG, WWN of node and port are passed to login server (FFFFFE).
+\item
+  Login server returns FC address to node.
+\item
+  Login server registers WWN with FC address so node can be found by
+  WWN.
+\end{itemize}
+\item[Port login (PLOG)]
+when an \(N\) port on an initiator makes a connection to the \(N\) port
+on a target through the fabric. (Must have completed FLOG first.)
+\item[Process Login (PRLI)]
+which establishes the Upper Layer Protocol (ULP) (such as SCSI) between
+two \(N\) ports.
+\end{description}
+
+\section{Zoning}
+\label{sec:zoning}
+
+Zoning is where ports in the fabric are logically grouped together, .
+Zoning can provide security benefit, avoid accidental mis-configuration
+and increase performance. Conceptually like ethernet VLAN.
+
+\autoref{fc_zoning}{FC Zoning}{fc-zoning}
+
+\begin{itemize}
+\item
+  When zoning is used, a port may be a member of one or more zones.
+  Nodes only see other nodes that are same zone as themselves. A zone
+  can span multiple switches in the fabric.
+\item
+  Without zoning, all nodes get all RSCNs. In zoned FC, RSCNs get sent
+  only to nodes in zone. Cuts down on the amount of fabric managament
+  traffic if done correctly.
+\item
+  Zone set comprises multiple zones. Can be activated / deactivated as
+  single unit within fabric. Only one zone can be active at one time.
+\end{itemize}
+
+\subsection{Zone types}
+\label{sec:zone-types}
+
+\begin{description}
+\item[Port zoning]
+where switch ports are grouped into zone(s). (Easy replacement of failed
+devices.)
+\item[WWN zoning]
+where WWNs are grouped into zones. (Allows physical movement.)
+\item[Mixed zoning]
+combining both. E.g. host WWN and storage port or vice-versa.
+\item[Single HBA zoning]
+each HBA has own zone created and relevant storage added to it.
+\end{description}
+
+\autoimage{fc_zone_types}{FC Zone types (EMC ISM book)}{fc-zone-types}
+
+\section{FC Topologies}
+\label{sec:fc-topologies}
+
+\autoimage{fc_topologies}{FC topologies}{fc-topologies}
+
+\subsection{Single-switch}
+\label{sec:single-switch}
+
+Single switch topologies are now very common:
+
+\begin{itemize}
+\item
+  Most FC deployments are in data centre environments where overall
+  distance is low.
+\item
+  Increasing number of ports per switch.
+\item
+  Cheap and easy to administer. No ISLs, simple fabric.
+\end{itemize}
+
+\subsection{Mesh fabric}
+\label{sec:mesh-fabric}
+
+A mesh fabric involves multiple switches connected such that each is
+connected redundantly to other switches, .
+
+\begin{description}
+\item[Full mesh]
+where any switch in the fabric is linked to all others directly.
+\item[Partial mesh]
+where crossing multiple ISLs are necessary to get to some switches.
+\end{description}
+
+\autoimage{fc_mesh_topologies}{Mesh topologies}{fc-mesh-topologies}
+
+\subsection{Core-Edge Fabric}
+\label{sec:core-edge-fabric}
+
+Core-edge fabrics involve a core tier that connects storage device to
+edge switches that connect to host devices, . Many variations on this
+theme.
+
+\autoimage{fc_single_core_topology}{Single-core topology (EMC ISM book)}{fc-single-core-topology}
+
+
+\end{document}
+
