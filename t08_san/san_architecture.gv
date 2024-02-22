@@ -1,0 +1,45 @@
+graph G {
+#	rankdir=LR;
+	layout=dot;
+
+	subgraph cluster_SAN {
+		label="Storage area network (SAN)";
+		subgraph cluster_storage_layer {
+		sa1 [label="Storage\nArray\n1", shape=cylinder, style=filled, fillcolor=palegreen];
+	sa2 [label="Storage\nArray\n2", shape=cylinder, style=filled, fillcolor=palegreen];
+	tl1 [label="Tape\nLibrary\n1", shape=cylinder, style=filled, fillcolor=palegreen];	
+}
+subgraph cluster_fabric_layer{
+	label="Fabric layer";
+	labelloc="b";
+	san [label="SAN Fabric", style=filled, fillcolor=lightpink];
+}
+subgraph cluster_host_layer{
+	label="Host layer";
+	h1 [label="Host 1", shape=box, style=filled, fillcolor=lightblue];
+	h2 [label="Host 2", shape=box, style=filled, fillcolor=lightblue];
+	h3 [label="Host 3", shape=box, style=filled, fillcolor=lightblue];
+	}
+	sa1 -- san;
+	sa2 -- san;
+	tl1 -- san;
+	h1 -- san;
+	h2 -- san;
+	h3 -- san;
+	
+}
+
+	
+	lan [label="LAN/WAN"];
+
+	h1 -- lan;
+	h2 -- lan;
+	h3 -- lan;
+
+	c1 [label="Client 1"];
+	c2 [label="Client 2"];
+
+	c1--lan;
+	c2--lan;
+
+}

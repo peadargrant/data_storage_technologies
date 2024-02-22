@@ -1,0 +1,173 @@
+\documentclass[slides]{pgnotes}
+
+\title{SAN}
+
+\begin{document}
+
+\maketitle
+
+\section{Storage area networks}
+
+\begin{center}
+\textbf{A storage area network provides:}\\
+\textbf{hosts} (servers, desktops, workstations) with access to\\
+consolidated \textbf{block-level storage}\\
+by means of a \textbf{fabric}.
+\end{center}
+
+
+\section{Layers}
+\label{sec:ip-san-layers}
+
+SANs are traditionally broken up into conceptual layers, .
+
+\begin{description}
+\item[Host layer:]
+consisting of the servers / computers that access storage provisioned
+through the SAN.
+\item[Fabric layer:]
+  containing the networking cabling and hardware:
+  \begin{itemize}
+  \item hubs
+  \item switching
+  \item routing
+  \item protocol converters
+  \end{itemize}
+\item[Storage layer:]
+consisting of storage appliances such as disk arrays, tape drives.
+\end{description}
+
+\autoimage{san_architecture}{SAN architecture}{san-architecture}
+
+\autoimage{san_switch}{SAN switch}{san-switch}
+
+\autoimage{storage_array}{Storage array}{storage-array}
+
+\section{SCSI}
+\label{sec:scsi}
+
+Small Computer Systems Interface (SCSI) is a protocol used to connect
+(mainly) storage devices to a host.
+
+\begin{description}
+\item[Parallel SCSI]
+using 50-pin and similar connectors
+\item[Serially-Attached SCSI (SAS)]
+drives are often seen as direct-attached storage in servers.
+\end{description}
+
+Because the protocol is well standardised, it often forms the basis of
+SAN as it's easy to encapsulate across a network.
+
+\autoimage{external_scsi_connectors}{External SCSI connectors}{external-scsi-connectors}
+
+\section{SAN types}
+\label{sec:san-types}
+
+\begin{description}
+\item[Fibre Channel]
+encapsulates SCSI commands in Fibre-Channel Protocol (FCP) normally
+carried on optical fibre. Also Fibre-Channel Over Ethernet (FCoE) and
+Fibre-Channel over IP.
+\item[iSCSI]
+encapsulates SCSI commands in iSCSI protocol on TCP/IP carried over
+standard IP network.
+\item[Multiheaded-SAS]
+\end{description}
+
+\section{Key concepts}
+\label{sec:key-concepts}
+
+\begin{itemize}
+\item
+  Storage appliances (like disk arrays) are set up with logical volumes.
+  Due to historical SCSI terminology, these are called \textbf{Logical Unit Numbers (LUNs)}.
+\item
+  A storage device exposes a \textbf{target} that has one or more logical block devices LUNs associated with it.
+
+  \begin{itemize}
+  \item
+    Nowadays, most storage appliances can expose more than one target.
+    Helps later with access control.
+  \end{itemize}
+\item
+  To access block storage over a SAN, a host's \textbf{initiator} connects to a specific LUN on a specific target:
+  \begin{itemize}
+  \item
+    The initiator is normally a Host-Bus Adapter. Like HBAs for DAS, HBA
+    must match host's bus type and the type of SAN being used.
+  \item
+    Can also have software-initiators for iSCSI and FCOIP.
+  \item
+    Although iSCSI and FCOIP are IP-based, HBA is separate to host's
+    normal networking.
+  \item
+    The NIC and HBA can be combined on a single card known as a
+    Converged Networking Adapter (CNA).
+  \end{itemize}
+\end{itemize}
+
+\section{Usage points}
+\label{sec:usage-points}
+
+\begin{itemize}
+\item
+  Normally, a LUN can be attached to only one host at a time.
+\item
+  As a block device, the host OS is entirely in control of the LUN
+  (e.g.~formatting).
+\item
+  With a SAN HBA, the host OS is unaware that the disk is not a
+  locally-attached disk:
+
+  \begin{itemize}
+  \item
+    Boot-from-SAN possible with no local hard disk.
+  \item
+    SAN can be transparently used on mission-critical legacy systems
+    (like Xenix, OS/2).
+  \end{itemize}
+\item
+  SAN can feature in backup configurations.
+\end{itemize}
+
+\section{Non-shared storage}
+\label{sec:non-shared-storage}
+
+iSCSI conceptually just extends the physical disk drive cable over a
+network.
+
+\textbf{Just as we can't normally connect a hard disk to two computers
+at the same time, we can't \emph{normally} have two initiators logged
+into the same LUN at the same time.}
+
+\begin{itemize}
+\item
+  No problem detaching a LUN from a host and attaching it to another.
+\item
+  LUNs that are read-only can be simultaneously attached to multiple hosts.
+\item
+  So-called clustered filesystems can permit multiple machines access to the same LUN at the same time.
+\item Some targets will permit only a single connection to a LUN. Others will
+permit multiple connections, and data corruption is bound to occur if
+this happens.
+\end{itemize}
+
+\section{SAN vs NAS}
+\label{sec:san-vs-nas}
+
+A SAN is distinct from NAS in one key respect:
+
+\begin{center}
+\textbf{SAN \(\ne\) NAS}
+\end{center}
+
+Specifically:
+\begin{enumerate}
+\item A \textbf{SAN} provisions a remote \textit{block level storage} device for a host.
+\item \textbf{NAS} provides a \textit{remote file system}.
+\end{enumerate}
+SAN and NAS are \emph{complementary} technologies that address \emph{different} use cases.
+
+\end{document}
+
