@@ -1,0 +1,65 @@
+\documentclass[slides]{pgnotes}
+
+\title{Flash storage summary}
+
+\begin{document}
+
+\maketitle
+
+\section{Operating principle}
+
+\subsection{Floating gate transistors}
+
+Modern flash memory relies on so-called Floating-Gate Transistors, \autoref{fig:floating-gate-transistor}.
+
+\autoimage{floating_gate_transistor}{Floating Gate Transistor}{floating-gate-transistor}
+
+\subsection{NAND flash}
+
+\begin{description}
+\item[NAND flash]
+\item[NOR flash]
+\end{description}
+
+\autoimage{nand_flash}{NAND flash structure}{nand-flash}
+
+\autoimage{nor_flash}{NOR flash structure}{nor-flash}
+
+\subsection{Flash levels}
+
+Flash storage is categorised by how many levels a single cell stores: 
+
+\begin{description}
+\item[Single Level Cell (SLC)] flash has 2 levels, storing 1 bit (1 or 0).
+\item[Multi-Level Cell (MLC)] flash cells store $n$ bits using $2^n$ levels.
+  \begin{description}
+  \item[Triple-Level Cell (TLC)] stores 3 bits using $2^3=8$ levels.
+  \item[Quadruple-Level Cell (QLC)] stores 4 bits using $2^4=16$ levels.
+  \end{description}
+\end{description}
+
+\autoimage{flash_levels}{Flash levels}{flash-levels}
+
+\section{Organisation}
+
+Flash drives are divided into blocks consisting of multiple pages.
+Note that blocks here have a different meaning to mechanical disk drives!
+
+\autoimage{flash_organisation}{Flash block and page organisation}{flash-organisation}
+
+\begin{description}
+\item[Page:] smallest individually addressable unit of storage. Typically \SI{4}{\kilo\byte}, \SI{8}{\kilo\byte}, \SI{16}{\kilo\byte}.
+\item[Block:] group of pages (often 32, 64, 128).
+\end{description}
+
+\section{Performance}
+
+\begin{itemize}
+\item Reading is done at the level of individual pages.
+\item Writing is more complicated.  Flash cells are erased at the block level to logical 1.  Writing can only set 0, not 1, and happens at the page level. Entire block must be erased and re-written to modify single page.
+\item Flash drives do not have mechanical latencies such as seek time, rotational latency.
+\item A flash drive has multiple parallel channels from its controller to the memory chips.  The greater the number of channels, the greater the performance.
+\end{itemize}
+
+\end{document}
+
