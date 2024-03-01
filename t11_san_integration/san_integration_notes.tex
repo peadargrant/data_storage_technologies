@@ -1,75 +1,96 @@
+\documentclass[slides]{pgnotes}
+
+\title{SAN integration}
+
+\begin{document}
+
+\maketitle
+
 \section{SAN integration}
 \label{sec:san-integration}
 
-FC SAN primarily is a highly reliable, high-perforamance,
-data-centre-centric solution that comes at considerable cost. The FCP is
-non-routable, and is therefored confined spatially. Often we want to
-broaden access to our existing FC SAN by means of integration
-technologies.
+\begin{itemize}
+\item  FC SAN primarily is a highly reliable, high-perforamance, data-centre-centric solution that comes at considerable cost.
+\item The FCP is non-routable, and is therefored confined spatially.
+\item Often we want to broaden access to our existing FC SAN by means of integration technologies.
+\end{itemize}
 
-Generally, we shouldn't start out building a SAN that needs to use these
-primarily. Like WiFi-extenders, poorly thought-out SAN integration can
-do more harm than good!
+A word of warning:
+\begin{itemize}
+\item Generally, we shouldn't start out building a SAN that needs to use these primarily.
+\item Like WiFi-extenders, poorly thought-out SAN integration can do more harm than good!
+\end{itemize}
 
 \section{Fibre Channel over Ethernet (FCoE)}
 \label{sec:fibre-channel-over-ethernet-fcoe}
 
-FCoE is where FCP runs over existing ethernet infrastructure, usually on
-CAT5/6 cabling. It can coexist with LAN traffic. Normally its used to
-connect ethernet-attached hosts to an existing FC SAN fabric.
-
-Layers 1 and 2 are the same we are familiar with from IP networking. The
-key difference occurs at Layer 3: FCP is encapsulated in ethernet
-frames.
+FCoE is where FCP runs over existing ethernet infrastructure:
+\begin{itemize}
+\item usually on CAT5/6 cabling
+\item can coexist with LAN traffic
+\end{itemize}
+Normally its used to connect ethernet-attached hosts to an existing FC SAN fabric.
+\begin{itemize}
+\item Layers 1 and 2 are the same we are familiar with from IP networking.
+\item Key difference occurs at Layer 3: FCP is encapsulated in ethernet frames.
+\end{itemize}
 
 \subsection{FCoE frame format}
 \label{sec:fcoe-frame-format}
 
-\autoref{fig:fcoe-frame} shows the format of a FCoE frame.
-The Ethertype denotes the frame as FCoE (as opposed to IP).
-
+\begin{itemize}
+\item The Ethertype denotes the frame as FCoE (as opposed to IP).
+\item \autoref{fig:fcoe-frame} shows the format of a FCoE frame.
+\end{itemize}
+  
 \autoimage{fcoe_frame}{FCoE frame (Wikipedia)}{fcoe-frame}
 
 \subsection{FCoE fabric}
 \label{sec:fcoe-fabric}
 
-FC natively has a lossless transport. Protocols such as IP running over
-ethernet normally are tolerant of frames being dropped when congestion
-is high. FCoE requires extensions to the ethernet protocol to guarantee
-lossless transmission, called Priority Flow Control.
-
-In practical terms, we need to use a FCoE-aware switch.
+\begin{itemize}
+\item FC natively has a lossless transport.
+\item Protocols such as IP running over ethernet normally are tolerant of frames being dropped when congestion is high.
+\item FCoE requires extensions to the ethernet protocol to guarantee lossless transmission:
+  \begin{itemize}
+  \item Called Priority Flow Control.
+  \item In practice, need FCoE capable switch.
+  \end{itemize}
+\end{itemize}  
+  
 
 \subsection{FCoE-FC gateway}
 \label{sec:fcoe-fc-gateway}
 
-A FCoE gateway will connect FCoE devices to an existing FC network, .
-The gateway acts as a so-called fibre channel forwarder to bridge the
-FCoE to the FC. Additionally it provides the normal fabric services.
+\begin{itemize}
+\item A FCoE gateway will connect FCoE devices to an existing FC network, \autoref{fig:fc-gateway}.
+  \begin{enumerate}
+  \item Acts as a so-called fibre channel forwarder to bridge the FCoE to the FC.
+  \item Provides the normal fabric services.
+  \end{enumerate}
+\item This is actually quite a complex process under the hood:
+  \begin{itemize}
+  \item Mapping is required from WWNs to MAC addresses.
+  \item Gateway device is often a FC switch/director with an FCoE card fitted.
+  \end{itemize}
+\end{itemize}
 
 \autoimage{fcoe_gateway}{FCoE gateway}{fcoe-gateway}
 
-This is actually quite a complex process under the hood, as mapping is
-required from WWNs to MAC addresses. The gateway device is often a FC
-switch/director with an FCoE card fitted.
 
 \subsection{FCoE host hardware}
 \label{sec:fcoe-host-hardware}
 
 Hosts traditionally use a FCoE HBA to connect to the FCoE-provided
-fabric. Software initiators are theoretically possible, like
-\texttt{open-fcoe} but are unusual to see in use.
-
-Since FCoE and IP LAN traffic run over ethernet, we can converge the two
-using a FCoE Converged Networking Adapter. This is similar to the CNA we
-discussed for iSCSI, in that it includes the SAN HBA and NIC on one
-card. shows a CNA handling both sets of traffic which split at a
-FCoE-aware switch.
-
+fabric:
+\begin{itemize}
+\item Software initiators are theoretically possible, like \texttt{open-fcoe} but are unusual to see in use.
+\item Since FCoE and IP LAN traffic run over ethernet, we can converge the two using a FCoE Converged Networking Adapter.
+\item Generally recommended that VLANs are used to separate FCoE and IP traffic where they co-exist.
+\end{itemize}
+  
 \autoimage{fcoe_cna}{FCoE converged networking (Wikipedia)}{fcoe-cna}
 
-It is generally recommended that VLANs are used to separate FCoE and IP
-traffic where they co-exist.
 
 \subsection{FCoE Application Areas}
 \label{sec:fcoe-application-areas}
@@ -144,3 +165,4 @@ runs over TCP/IP it is routable across Layer-2 boundaries.
   from the FC SAN.
 \end{itemize}
 
+\end{document}
