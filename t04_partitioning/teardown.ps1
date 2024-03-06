@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 
-$StackName = 'partitioning'
+$StackName=((Split-Path -Path (Get-Location) -Leaf) -split "_",2)[1]
 
 Write-Host "deleting $StackName stack..."
 aws cloudformation delete-stack --stack-name $StackName

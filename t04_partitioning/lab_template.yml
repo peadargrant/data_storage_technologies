@@ -11,7 +11,18 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base
 
+  ED25519Key:
+    Type: String
+    AllowedPattern : ".+"
+    
+    
 Resources:
+
+  KeyPairLinux:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: dst-lab-linux
+      PublicKeyMaterial: !Ref ED25519Key
 
   Vpc:
     Type: AWS::EC2::VPC 
@@ -93,10 +104,10 @@ Resources:
       ImageId: !Ref LatestLinuxImageId
       SecurityGroupIds:
       - !Ref SecurityGroup
-      KeyName: ED25519_KEY 
+      KeyName: !Ref KeyPairLinux
       Tags:
       - Key: Name
-        Value: !Sub '${AWS::StackName}-instance'
+        Value: !Sub '${AWS::StackName}-linux-instance'
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs:
