@@ -9,6 +9,7 @@ if ( !(Test-Path $LinuxKeyFile) ) {
     Write-Host 'no ed25519 key file found'
     Write-Host 'you should run: ssh-keygen -t ed25519 '
     Write-Host' and try again.'
+    exit
 }
 
 $LinuxPublicKey = Get-Content $LinuxKeyFile
