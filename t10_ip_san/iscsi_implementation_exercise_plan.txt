@@ -1,0 +1,26 @@
+ISCSI IMPLEMENTATION EXERCISE
+=============================
+
+Going to set up iSCSI and connect to it as a "secondary" (non-boot) drive.
+
+
+You can do this exercise on your own. Or,
+You *can* work with someone else if you want.
+BUT, you should understand both parts of what's going on.
+
+
+Diagram it out.
+Try to be specific around IQNs + the like.
+
+
+Create a basic Linux VM using Ubuntu.
+Create a small (e.g. 2-5 GB) disk image file.
+Set it up as an iSCSI target, no authentication, any initiator can connect.
+
+Use the host (or 2nd lab machine in Windows or windows VM)'s initiator to connect to the shared LUN.
+
+Now, create a second disk image, second target, with single LUN in it.
+Set up a 2nd Linux VM as a guest and connect using the instructions.
+
+
+

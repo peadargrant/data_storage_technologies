@@ -1,0 +1,32 @@
+digraph G {
+
+	rankdir=LR;
+
+	subgraph cluster_hosts {
+	label="Host layer";
+	H1;
+	H2;
+	H3;
+	}
+
+	subgraph cluster_fabric {
+	label="Fabric layer";
+	rankdir=LR;
+	N1;
+	N2;
+	}
+
+	subgraph cluster_storage {
+	label="Storage layer";
+	S1 [label="Disk array"];
+	S2 [label="Tape storage"];
+	}
+
+	H1->N1;
+	H2->N1;
+	H3->N2;
+	N1->N2;
+	N1->S1;
+	N2->S2;
+
+}

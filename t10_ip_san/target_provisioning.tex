@@ -1,0 +1,75 @@
+\section{Target provisioning
+operations}\label{target-provisioning-operations}
+
+iSCSI provision requires the \texttt{tgt} server program.
+\begin{itemize}
+  \item The iSCSI \texttt{tgt} server can expose physical block devices, partitions,
+logical volumes (basically anything with an entry in \texttt{/dev}) as a
+LUN.
+\item It can also expose a disk image file on the filesystem as a LUN.
+\end{itemize}
+
+\texttt{tgt} can be installed on Ubuntu/Debian using:
+
+\begin{verbatim}
+apt -y install tgt
+\end{verbatim}
+
+
+Imagine our server has LVM set up with a volume group called
+\texttt{vg\_main} (possibly amongst others) on it. This VG contains a
+number of logical volumes, including \texttt{lv\_data}. We want to
+expose \texttt{lv\_data} as a LUN on an iSCSI target. Obviously the
+\texttt{lv\_data} volume should not be mounted on the host.
+
+\subsection{Basic target and LUN}\label{basic-target-and-lun}
+
+The \texttt{tgt} server program is controlled from the file
+\texttt{iscsi.conf} located in the \texttt{/etc/tgt/conf.d} folder. The
+\texttt{iscsi.conf} is almost XML-like and defines one or more targets
+with one or more LUNs. Each target section defines one or more LUNs.
+
+This example shows a target \texttt{iqn.2020-03.ie.peadargrant}
+containing one LUN backed by the logical volume
+\texttt{/dev/vg\_main/lv\_data}:
+
+\begin{verbatim}
+<target iqn.2020-03.ie.peadargrant>
+    backing-store /dev/vg_main/lv_data
+</target>
+\end{verbatim}
+
+The iSCSI target server needs to be restarted to pick up any changes:
+
+\begin{verbatim}
+sudo systemctl restart tgt
+\end{verbatim}
+
+We can use the \texttt{tgtadm} command to print out information about
+the running tgt server:
+
+\begin{verbatim}
+tgtadm --mode target --op show
+\end{verbatim}
+
+Output looks like:
+
+We can then connect to the running tgt server from another machine using
+any iSCSI initiator. It doesn't matter whether it's a hardware HBA or
+CNA or a software initiator, or what OS is involved.
+
+\subsection{CHAP authentication}\label{chap-authentication}
+
+Our example above could require for example, \texttt{student} and
+\texttt{1Password} as follows:
+
+\begin{verbatim}
+<target iqn.2020-03.ie.peadargrant>
+    backing-store /dev/vg_main/lv_data
+    incominguser student 1Password
+</target>
+\end{verbatim}
+
+If you want mutual authentication, the \texttt{outgoinguser} parameter
+works in the same way as \texttt{incominguser} to handle this. Obviously
+the initiator will need to be set up correctly too.
