@@ -1,0 +1,132 @@
+# VPC/EC2/EBS template for Partitioning Lab
+# Peadar Grant
+
+Parameters:
+
+  LatestLinuxImageId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+  LatestWindowsImageId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base
+
+  ED25519Key:
+    Type: String
+    AllowedPattern : ".+"
+    
+    
+Resources:
+
+  KeyPairLinux:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: ${AWS::StackName}-key-linux
+      PublicKeyMaterial: !Ref ED25519Key
+
+  Vpc:
+    Type: AWS::EC2::VPC 
+    Properties: 
+      CidrBlock: 10.0.0.0/16
+      Tags:
+      - Key: Name 
+        Value: !Sub '${AWS::StackName}-vpc'
+    # order of Type and Properties doesn't matter
+    # but best to keep Type first
+  
+  Subnet:
+    Type: AWS::EC2::Subnet    
+    Properties:
+      AvailabilityZone: eu-west-1a
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: !Sub '${AWS::StackName}-subnet'        
+      VpcId: !Ref Vpc 
+        
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway    
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Sub '${AWS::StackName}-gateway'  
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment    
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref Vpc
+    
+  RouteTable:
+    Type: AWS::EC2::RouteTable    
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Sub '${AWS::StackName}-route-table'
+      VpcId: !Ref Vpc
+
+  Route:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGateway
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref RouteTable
+
+  Subnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation    
+    Properties:
+      RouteTableId: !Ref RouteTable
+      SubnetId: !Ref Subnet
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref Vpc
+      GroupDescription: allow connections from specified source security group
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 3389
+        ToPort: 3389
+        CidrIp: 0.0.0.0/0
+
+
+  LinuxInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      SubnetId: !Ref Subnet
+      ImageId: !Ref LatestLinuxImageId
+      SecurityGroupIds:
+      - !Ref SecurityGroup
+      KeyName: !Ref KeyPairLinux
+      Tags:
+      - Key: Name
+        Value: !Sub '${AWS::StackName}-linux-instance'
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: "8"
+            VolumeType: "gp2"
+        - DeviceName: /dev/xvdb
+          Ebs:
+            VolumeSize: "2"
+            VolumeType: "standard"
+        - DeviceName: /dev/xvdc
+          Ebs:
+            VolumeSize: "2"
+            VolumeType: "standard"
+        
+  
+Outputs:
+
+  PublicIp:
+    Value: !GetAtt LinuxInstance.PublicIp
+    Description: Instance Public Ip
+    
+    
