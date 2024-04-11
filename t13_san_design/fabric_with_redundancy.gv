@@ -1,0 +1,36 @@
+digraph G {
+	rankdir=LR;
+
+	subgraph cluster_host_layer {
+	label="Host layer";
+	H1 [shape="record",label="{Host 1|{<HBA1>HBA 1|<HBA2>HBA 2}}"];
+	H2 [shape="record",label="{Host 2|{<HBA1>HBA 1|<HBA2>HBA 2}}"];
+	H3 [shape="record",label="{Host 3|{<HBA1>HBA 1|<HBA2>HBA 2}}"];
+	H4 [shape="record",label="{Host 4|{<HBA1>HBA 1|<HBA2>HBA 2}}"];
+	H5 [shape="record",label="{Host 5|{<HBA1>HBA 1|<HBA2>HBA 2}}"];
+	}
+	subgraph cluster_fabric_layer {
+	label="Fabric layer";
+	SW1 [label="Switch 1"];
+	SW2 [label="Switch 2"];
+	}
+	subgraph cluster_storage_layer {
+	label="Storage layer";
+	SA1 [shape=record,label="{{<P1A>Port 1A|<P1B>Port 1B|<P2A>Port 2A|<P2B>Port 2B}|{Controller 1|Controller 2}|Storage appliance 1}"];
+	}
+	H1:HBA1->SW1;
+	H2:HBA1->SW1;
+	H3:HBA1->SW1;
+	H4:HBA1->SW1;
+	H5:HBA1->SW1;
+	H1:HBA2->SW2;
+	H2:HBA2->SW2;
+	H3:HBA2->SW2;
+	H4:HBA2->SW2;
+	H5:HBA2->SW2;	
+	SW1->SA1:P1A;
+	SW2->SA1:P1B;
+	SW1->SA1:P2A;
+	SW2->SA1:P2B;
+
+}

@@ -1,0 +1,13 @@
+digraph G {
+
+rankdir=LR;
+
+production [ label="Production storage"];
+backup [label="Backup storage"];
+
+production -> backup [label="Backup"];
+backup -> production [ label="Restore"];
+
+
+
+}

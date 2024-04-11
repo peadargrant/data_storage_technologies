@@ -1,0 +1,26 @@
+digraph G {
+	rankdir=LR;
+
+	subgraph cluster_lan {
+	label="General-purpose LAN";
+	c1 [ label="NAS client 1"];
+	c2 [ label="NAS client 2"];
+	c3 [ label="NAS client 3"];
+	}
+
+	subgraph cluster_san {
+	label="SAN fabric (FC, iSCSI, other)";
+	t1 [ label="Target 1"];
+	t2 [ label="Target 2"];
+	}
+
+	gw [ label="NAS gateway"];
+
+	c1 -> gw;
+	c2 -> gw;
+	c3 -> gw;
+	gw -> t1;
+	gw -> t2;
+	
+
+}

@@ -1,0 +1,169 @@
+\documentclass[slides]{pgnotes}
+
+\title{SAN design}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Purpose}
+\label{sec:purpose}
+
+\begin{description}
+\item[Online host-specific block storage]
+essentially replacing directly-attached block devices on the hosts.
+\item[Online clustered block storage]
+allowing a number of hosts to share a block device that is formatted
+with a clustered/shared file system.
+\item[Offline block storage]
+replacing removeable drives on hosts. This may be for archival purposes.
+\item[Backup]
+  where the SAN facilitates access to block devices for backup.
+  \begin{itemize}
+  \item May be disk-backed LUNs on storage appliance.
+  \item May also include tape-based backup systems on SAN-attached tape equipment.
+  \end{itemize}
+\end{description}
+
+\subsection{Host-specific considerations}
+
+\begin{itemize}
+\item
+  Will hosts be booting from the SAN?
+  \begin{itemize}
+  \item There are a number of ways to  provision this.
+  \end{itemize}
+\end{itemize}
+
+\section{SAN type}
+\label{sec:san-type}
+
+\begin{description}
+\item[Motivations for IP SAN:] ~ 
+  \begin{enumerate}
+  \item Low/no-cost entry
+  \item Leverage existing IP knowledge
+  \item Re-use of infrastructure (incl. WAN)
+  \end{enumerate}
+\item[Motivations for FC SAN:] ~ 
+  \begin{enumerate}
+  \item Performance
+  \item Reliability
+  \item Inherent SAN/LAN demarcation.
+  \end{enumerate}
+\end{description}
+
+\subsection{Additional considerations}
+
+\begin{itemize}
+\item
+  Problem-solving technologies available: FCoE, FCoIP, iSCSI-FC
+  bridging.
+  \begin{itemize}
+  \item Unwise to base network around these technologies.
+  \end{itemize}
+\item
+  Depending on organisation structure and culture, there may be
+  different teams responsible for storage vs general-purpose networking.
+\end{itemize}
+
+\section{High Availability}
+\label{sec:high-availability}
+
+SANs hold high-value information critical to continuity of service. A
+naively designed SAN may exhibit worse availability characteristics than
+simple direct-attached storage on individual hosts.
+
+\subsection{Storage layer availability}
+\label{sec:storage-layer-availability}
+
+Storage appliances normally include a number of features to ensure high
+availability, \autoref{fig:powervault-rear}.
+
+\autoimage{powervault_rear}{Rear of Dell PowerVault storage appliance}{powervault-rear}
+
+\begin{description}
+\item[Disk redundancy]
+where volumes / LUNs are provisioned such that the array is redundant
+against disk failures. May include RAID, hot spares etc.
+\item[Dual power-supply]
+where each storage applicance has two Power Supply Units (PSU).
+\begin{itemize}
+\item
+   Each PSU independently capable of supporting the load.
+\item
+  Data centre environment should have dual power supply to take full advantage of dual PSU.
+\end{itemize}
+\item[Redundant cooling components] permitting the storage appliance to continue operating despite the failure of 1 (or sometimes more) fans.
+  \begin{itemize}
+  \item Should be easily replaced.
+  \item Often hot swappable.
+  \end{itemize}
+\item[Dual controller] where the storage array has two controller modules
+  (i.e.~high-performance embedded computer).
+  \begin{itemize}
+  \item Normally works so that either controller can independently provide all services.
+  \item May be hot swappable, \autoref{fig:hot-swap-controller}.
+  \end{itemize}
+\item[Remote management capabilities]
+that allow the storage appliance to alert administrators should any
+failures occur. Essential that all alerts are enabled and acted upon to
+avoid storage appliance remaining in a degraded state (e.g.~failed PSU)
+as redundancy will hide this situation.
+\end{description}
+
+\autoimage{hot_swap_controller}{Hot-Swap Controller}{hot-swap-controller}
+
+\subsection{Fabric layer availability}
+\label{sec:fabric-layer-availability}
+
+The fabric (regardless of type) can represent a significant single point
+of failure. Consider the simple SAN layout in \autoref{fig:rabric-no-redundancy}.
+
+\autoimage{fabric_no_redundancy}{Fabric with no redundancy}{fabric-no-redundancy}
+
+
+This is vulnerable to a failure of the switch SW1. Duplicating the SAN
+fabric averts this, \autoref{fig:fabric-with-redundancy}.
+
+\autoimage{fabric_with_redundancy}{Fabric with redundancy}{fabric-with-redundancy}
+
+
+SAN fabric components (e.g.~switches) should be dual-powered where
+possible. This may be via dual-PSU or via external transfer switches.
+
+\subsection{Host layer availability}
+\label{sec:host-layer-availability}
+
+Assuming that there is redundancy in the fabric, the host layer requires
+approriate redundancy to connect to the fabric.
+
+To transparently utilise the redundant fabric we must ensure that
+multipathing is correctly configured.
+
+\subsection{Data centre environment}
+\label{sec:data-centre-environment}
+
+A SAN will normally be provisioned within a data centre environment. We
+should assume at a minimum:
+
+\begin{description}
+\item[Power supply]
+is protected by UPS, possibly generator and has diverse A and B power
+paths.
+\item[Cooling]
+is sufficient to meet the load and incorporates redundancy to maintain
+operation in the event of a failure.
+\item[Fire detection and suppression]
+to protect data and ensure service availability.
+\item[Physical security]
+appropriate to the data and service risk profile.
+\end{description}
+
+The provision of a SAN should dictate that the infrastructural services
+are sufficient.
+
+\end{document}
+

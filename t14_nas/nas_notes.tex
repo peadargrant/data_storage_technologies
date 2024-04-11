@@ -1,0 +1,164 @@
+\documentclass[slides]{pgnotes}
+
+\title{Network-Attached Storage}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Network Attached Storage}\label{network-attached-storage}
+
+NAS allows storage to be shared over a LAN at the filesystem level. This
+contrasts to SAN where block level storage is provided. It is assumed in
+a NAS environment that any number of clients can simultaneously connect
+to the share.
+
+\subsection{NAS protocols}
+\label{sec:nas-protocols}
+
+summarises the NAS protocols commonly encountered.
+
+\begin{table}[htbp]
+  \begin{tabularx}{1.0\linewidth}{l l l X}
+    \toprule
+    \textbf{Protocol} & ~ & \textbf{Port} & \textbf{Remarks} \\
+    \midrule
+    Server Message Block & SMB & 135,137-139,445 & Windows-centric but cross-platform. Samba and CIFSd for Linux.\\
+    Common Internet File System & CIFS & ~ & Attempted re-name of SMB by Microsoft\\
+    Network File System & NFS & ~ & UNIX centric but cross-platform. Multiple versions, currently NFSv4. NFS client on Windows.\\
+    Apple Filing Protocol & AFP & 548 & Developed from earlier AppleShare protocol. Not often encountered.\\
+    Netware Core Protocol & NCP & 524 & Like SMB has support for print and other sharing as well.\\
+    \bottomrule
+  \end{tabularx}
+  \caption{NAS protocols}
+  \label{tab:nas-protocols}
+\end{table}
+
+Points to note:
+
+\begin{enumerate}
+\item
+  Some protocols like SMB/CIFS and NCP were designed for more than file
+  sharing. Print sharing, domain and interprocess communication were
+  also facilitated. We won't be dealing with these uses here.
+\item
+  Most NAS protocols run over TCP/IP. Historically other transports were
+  used like NetBIOS for SMB and IPX for NCP. Some idiosyncrancies
+  remain.
+\item
+  Although technically routable over WAN links, NAS protocols tended to
+  be designed with LAN usage in mind. Often had poor/no security.
+\item
+  If they need to be used off-site, best to use a VPN link. Tuning the
+  configuration can help performance greatly when used over WAN or VPN
+  links.
+\end{enumerate}
+
+\subsection{Access pattern}
+\label{sec:access-pattern}
+
+Network attached storage is normally utilised via a virtual filesystem.
+This allows the network filesystem to be mounted (Unix) / mapped as a
+drive letter (Windows): Points to note:
+
+\begin{itemize}
+\item
+  Client sees filesystem of the NAS protocol (SMB, NFS).
+\item
+  Client is unaware of the underlying filesystem (NTFS, ext4, etc) on
+  the server. Also unaware of what block device (local, SAN etc) the
+  filesystem resides on.
+\item
+  Share may be mounted read-only or read-write.
+\item
+  Permissions are a complex compound of:
+
+  \begin{enumerate}
+  \item
+    Server filesystem permissions
+  \item
+    Permissions defined within the share server
+  \item
+    Client-side permissions
+  \end{enumerate}
+
+  Often issues when a Linux/UNIX client connects to an SMB share and
+  multiple users on the UNIX client attempt to use the shared drive.
+  Configuration can become very tricky!
+\end{itemize}
+
+As an alternative there are tools that can connect directly to the
+shares like an FTP client, such as \texttt{smbclient} for Linux. Mobile
+apps tend to work similarly.
+
+\section{Provisioning}
+\label{sec:provisioning}
+
+\subsection{General-purpose server}
+\label{sec:general-purpose-server}
+
+General-purpose servers running standard operating systems have server
+software installed for most common protocols. General arrangement:
+
+\begin{enumerate}
+\item
+  One or more shares configured. Each share points to a directory on the
+  server's filesystem.
+\item
+  Server software configured to start on boot.
+\item
+  Shares on UNIX-like OS are normally configured in the appropriate
+  configuration file for the server program. Common examples:
+
+  \begin{enumerate}
+  \item
+    \texttt{/etc/exports} file defines NFS exports (shares)
+  \item
+    \texttt{exportfs} command can be used to manage NFS exports
+  \item
+    \texttt{/etc/smb.conf} or similar Samba configuration file sets up
+    SMB shares
+  \end{enumerate}
+\item
+  Windows OS allows configuration of shares from file explorer view or
+  PowerShell.
+\item
+  Storage may be provisioned on a local disk or may be on a LUN from a
+  SAN.
+\end{enumerate}
+
+\subsection{Storage appliance}
+\label{sec:storage-appliance}
+
+A number of vendors supply NAS devices that can, as a minimum provide
+SMB and/or NFS services. Often support many other services. Key vendors:
+Synology, QNAP. Points to note:
+
+\begin{itemize}
+\item
+  Often 2 and 4-bay disk setup with RAID and/or LVM.
+\item
+  Usually built on Linux or FreeBSD internally with a custom web-based
+  management application on top.
+\item
+  Some NAS-type devices also contain iSCSI Target Servers allowing
+  SAN-type LUNs to be configured. These are normally backed either by
+  LVM volumes or disk images.
+\item
+  May be possible to connect to a LUN as if it were an internal disk.
+\item
+  Low-power, quiet and useful in domestic (music, backup, video sharing)
+  and light-commercial settings.
+\end{itemize}
+
+\subsection{NAS gateway}
+\label{sec:nas-gateway}
+
+A NAS gateway / NAS head / protocol converter delivers NAS shares from
+SAN volumes. High-performance embedded dedicated storage appliance that
+may have hardware acceleration.
+
+\end{document}
+
