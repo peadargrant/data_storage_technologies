@@ -21,9 +21,9 @@ Links below:
 
 8. [Thu Mar 14](https://media.heanet.ie/page/5cb3cfa3b60e445a832f253dd159776f): iSCSI
 
-9. [Thu Apr 11 Part 1](https://media.heanet.ie/page/e00d34086943416c99577e3c572b6266)
+9. [Thu Apr 11 Part 1](https://media.heanet.ie/page/e00d34086943416c99577e3c572b6266): SAN Design
 
-   [Thu Apr 11 Part 2]()
+   [Thu Apr 11 Part 2](https://media.heanet.ie/page/866ad390cc6c47bea31a529d1c4c146f): SAN Design, CA2
 
 ## Please note
 
