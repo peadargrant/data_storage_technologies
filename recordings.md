@@ -21,10 +21,15 @@ Links below:
 
 8. [Thu Mar 14](https://media.heanet.ie/page/5cb3cfa3b60e445a832f253dd159776f): iSCSI
 
+9. [Thu Apr 11 Part 1](https://media.heanet.ie/page/e00d34086943416c99577e3c572b6266)
+
+   [Thu Apr 11 Part 2]()
+
 ## Please note
 
 - DkIT login required to view recordings
 - Recordings will be removed once the semester is over
+- Recordings may be removed at any time
 - Recordings are on a best-effort basis and are not guaranteed
 - Some classes or portions thereof will not be recorded
 
