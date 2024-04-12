@@ -1,8 +1,5 @@
 % DST CA2 specification
 
-**IMPORTANT: SUBJECT TO REVISION. DO NOT START ON THIS ASSIGNMENT.**
-
-
 *Weight*: 40%
 
 *Due date:* as on Moodle
@@ -57,10 +54,3 @@ Limitations (20%)
 
 Identify 2-4 limitations in your design as bullet points in `limitations.txt`.
 Are the limitations justifiable in the context of the problem you set out to solve?
-
-Presentation
-============
-
-This CA may require demonstration / presentation (no slides required).
-To be scheduled by the lecturer after the deadline.
-Submissions received where student does not attend for demonstration will receive zero.
