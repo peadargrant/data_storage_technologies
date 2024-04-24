@@ -1,0 +1,179 @@
+\documentclass[slides]{pgnotes}
+
+\title{Backup}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Backup}
+
+\subsection{Backup terminology}
+\label{sec:backup-terminology}
+
+\begin{description}
+\item[Production data]
+is actively used in the course of day-to-day operations.
+\item[Backup:]
+additional copy of production data that is created and retained for the
+sole purpose of recovering lost or corrupted data.
+\item[Archive:]
+store of data that is no longer actively used that is retained on
+low-cost secondary storage.
+\end{description}
+
+\autoimage{backup_operations}{Backup operations}{backup-operations}
+
+\subsection{Backup purpose}
+\label{sec:backup-purpose}
+
+\begin{description}
+\item[Disaster recovery]
+where production systems are damaged / destroyed.
+\item[Operational recovery]
+where data loss / corruption occurs due to application failure or user
+error (e.g.~important email deleted).
+\item[Archival]
+for regulatory compliance, historical record, later analysis etc.
+\end{description}
+
+\subsection{Backup parameters}
+\label{sec:backup-parameters}
+
+\begin{description}
+\item[Recovery Point Objective (RPO)]
+the most recent point in time to which we should be able to restore.
+Dictates backup frequency.
+\item[Recovery Time Objective (RTO)]
+is the time taken to restore the system to the RPO point after an
+incident occurs.
+\end{description}
+
+\autoimage{rpo_rto_graph}{RPO-RTO graph}{rpo-rto-graph}
+
+\subsection{Backup methods}
+\label{sec:backup-methods}
+
+\begin{description}
+\item[Hot / online:]
+production system is running during backup:
+
+\begin{itemize}
+\item
+  Does not interrupt normal operation
+\item
+  Issues with open files, particularly database backend stores.
+\end{itemize}
+\item[Cold / offline:]
+production system is shut-down for normal operations.
+\end{description}
+
+\subsection{Backup scope}
+\label{sec:backup-scope}
+
+Scope refers to what is actually backed up:
+
+\begin{itemize}
+\item
+  Files themselves
+\item
+  Files and their layout (e.g.~folders, symlinks)
+\item
+  Metadata (permissions, last updated)
+\item
+  Is a \emph{Bare Metal Recovery} required?
+\end{itemize}
+
+\section{Backup granularity}
+\label{sec:backup-granularity}
+
+There are three common granularities of backup, \autoref{fig:backup-granularity}.
+\href{https://www.acronis.com/en-us/articles/incremental-differential-backups/}{See
+Acronis article} on different granularities for further info.
+
+\autoimage{backup_granularity}{Backup granularity}{backup-granularity}
+
+\subsection{Full backup}
+\label{sec:full-backup}
+
+Full backup contains the entire dataset:
+
+\begin{itemize}
+\item
+  Completeness.
+\item
+  Frequent full backups may be prohibitive in terms of time and/or
+  storage space.
+\end{itemize}
+
+\subsection{Incremenetal backup}
+\label{sec:incremental-backup}
+
+Incremental backups store only the files changed since the most recent
+full or incremental backup was taken. Restoration steps are shown in .
+
+\autoimage{restore_from_incremental}{Restore from incremental}{restore-from-incremental}
+
+\subsection{Cumulative / Differential backup}
+\label{sec:cumulative-differential-backup}
+
+Differential backup includes files changed since the last \textbf{full}
+backup. Restoration steps are shown in
+
+\autoimage{restore_from_cumalative}{Restore from cumalative}{restore-from-cumalative}
+
+\section{Backup targets}
+\label{sec:backup-targets}
+
+Backup data is written to targets. Like any other storage media, targets
+may be directly attached to a host or may be LAN or SAN attached.
+
+\subsection{Disk-based backup}
+\label{sec:disk-based-backup}
+
+Disk-based backup has low cost, fast backup and recovery. Should be
+using monitored RAID to ensure backup availability.
+
+\subsection{Tape-based backup}
+\label{sec:tape-based-backup}
+
+Backup traditionally has used tape media.
+
+Tape drives are best operated such that they do not have to start/stop
+repeatedly during operation.
+
+Interleaving can be used so that multiple
+streams of data can be written to a tape at speed, \autoref{fig:interleave-tape}.
+
+\autoimage{interleave_tape}{Interleave tape}{interleave-tape}
+
+\subsection{Tape libraries}
+\label{sec:tape-libraries}
+
+Tape backup can be provisioned on a tape library in medium-large
+installations, \autoref{fig:physical-tape-library}.
+
+\autoimage{physical_tape_library}{Physical tape library}{physical-tape-library}
+
+\subsection{Virtual tape library}
+\label{sec:virtual-tape-library}
+
+Virtual tape library emulates a tape library but is actually provisioned
+usually from SAN LUNs, \autoref{fig:virtual-tape-library}.
+
+\autoimage{virtual_tape_library}{Virtual tape library}{virtual-tape-library}
+
+\subsection{Comparison}
+
+\autoimage{backup_targets_comparison}{Backup targets comparison}{backup-targets-comparison}
+
+\section{Deduplication}
+
+\autoimage{deduplication_at_source}{Deduplication at source}{deduplication-at-source}
+
+\autoimage{deduplication_at_target}{Deduplication at target}{deduplication-at-target}
+
+\end{document}
+
