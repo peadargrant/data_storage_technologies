@@ -10,15 +10,20 @@
 
 \section{Network Attached Storage}\label{network-attached-storage}
 
-NAS allows storage to be shared over a LAN at the filesystem level. This
-contrasts to SAN where block level storage is provided. It is assumed in
+NAS allows storage to be shared over a LAN at the filesystem level.
+
+This contrasts to SAN where block level storage is provided.
+
+It is assumed in
 a NAS environment that any number of clients can simultaneously connect
 to the share.
+
+\autoimage{nas}{NAS}{nas}
 
 \subsection{NAS protocols}
 \label{sec:nas-protocols}
 
-summarises the NAS protocols commonly encountered.
+\autoref{tab:nas-protocols} summarises the NAS protocols commonly encountered.
 
 \begin{table}[htbp]
   \begin{tabularx}{1.0\linewidth}{l l l X}
@@ -157,8 +162,12 @@ Synology, QNAP. Points to note:
 \label{sec:nas-gateway}
 
 A NAS gateway / NAS head / protocol converter delivers NAS shares from
-SAN volumes. High-performance embedded dedicated storage appliance that
+SAN volumes:
+
+High-performance embedded dedicated storage appliance that
 may have hardware acceleration.
+
+\autoimage{nas_head}{NAS head}{nap-head}
 
 \end{document}
 
